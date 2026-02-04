@@ -1,0 +1,13 @@
+product_id,product_name,category,price,stock_quantity,description,is_active
+1,Wireless Bluetooth Headphones,Electronics,79.99,150,Premium wireless headphones with noise cancellation and 30-hour battery life,true
+2,Stainless Steel Water Bottle,Home & Kitchen,24.99,300,Insulated water bottle keeps drinks cold for 24 hours,true
+3,Yoga Mat Premium,Sports & Fitness,34.99,200,Non-slip yoga mat with extra cushioning and carrying strap,true
+4,Smart Watch Series 5,Electronics,299.99,75,Fitness tracking heart rate monitor GPS and smartphone notifications,true
+5,Organic Coffee Beans,Food & Beverages,14.99,500,Fair trade organic coffee beans medium roast 1lb bag,true
+6,Leather Laptop Bag,Accessories,89.99,100,Genuine leather laptop bag with multiple compartments,true
+7,LED Desk Lamp,Home & Kitchen,39.99,180,Adjustable LED desk lamp with USB charging port,true
+8,Running Shoes Pro,Sports & Fitness,119.99,120,Professional running shoes with advanced cushioning technology,true
+9,Portable Phone Charger,Electronics,29.99,250,20000mAh portable charger with fast charging capability,true
+10,Ceramic Coffee Mug Set,Home & Kitchen,19.99,350,Set of 4 handcrafted ceramic coffee mugs,true
+11,Vintage Sunglasses,Accessories,49.99,0,Retro-style polarized sunglasses with UV protection,false
+12,Protein Powder Chocolate,Food & Beverages,44.99,200,Whey protein isolate chocolate flavor 2lb container,true

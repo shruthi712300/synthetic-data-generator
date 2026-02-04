@@ -1,0 +1,224 @@
+{
+  "tables": {
+    "customers": {
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR",
+          "nullable": false
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR",
+          "nullable": false
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR",
+          "nullable": false
+        },
+        {
+          "name": "phone",
+          "type": "VARCHAR",
+          "nullable": true
+        },
+        {
+          "name": "date_of_birth",
+          "type": "DATE",
+          "nullable": true
+        },
+        {
+          "name": "registration_date",
+          "type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR",
+          "nullable": false
+        }
+      ]
+    },
+    "products": {
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "product_name",
+          "type": "VARCHAR",
+          "nullable": false
+        },
+        {
+          "name": "category",
+          "type": "VARCHAR",
+          "nullable": false
+        },
+        {
+          "name": "price",
+          "type": "DECIMAL",
+          "nullable": false
+        },
+        {
+          "name": "stock_quantity",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": false
+        }
+      ]
+    },
+    "orders": {
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreign_key": {
+            "references": {
+              "table": "customers",
+              "column": "customer_id"
+            }
+          }
+        },
+        {
+          "name": "order_date",
+          "type": "DATETIME",
+          "nullable": false
+        },
+        {
+          "name": "total_amount",
+          "type": "DECIMAL",
+          "nullable": false
+        },
+        {
+          "name": "order_status",
+          "type": "VARCHAR",
+          "nullable": false
+        },
+        {
+          "name": "shipping_address",
+          "type": "TEXT",
+          "nullable": false
+        }
+      ]
+    },
+    "order_items": {
+      "columns": [
+        {
+          "name": "order_item_id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "order_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreign_key": {
+            "references": {
+              "table": "orders",
+              "column": "order_id"
+            }
+          }
+        },
+        {
+          "name": "product_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreign_key": {
+            "references": {
+              "table": "products",
+              "column": "product_id"
+            }
+          }
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "unit_price",
+          "type": "DECIMAL",
+          "nullable": false
+        },
+        {
+          "name": "discount_percentage",
+          "type": "FLOAT",
+          "nullable": true
+        }
+      ]
+    },
+    "reviews": {
+      "columns": [
+        {
+          "name": "review_id",
+          "type": "INTEGER",
+          "primary_key": true,
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreign_key": {
+            "references": {
+              "table": "products",
+              "column": "product_id"
+            }
+          }
+        },
+        {
+          "name": "customer_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "foreign_key": {
+            "references": {
+              "table": "customers",
+              "column": "customer_id"
+            }
+          }
+        },
+        {
+          "name": "rating",
+          "type": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "review_text",
+          "type": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "review_date",
+          "type": "DATETIME",
+          "nullable": false
+        }
+      ]
+    }
+  }
+}

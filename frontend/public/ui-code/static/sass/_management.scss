@@ -1,0 +1,49 @@
+/* Start: Team/Role Management */
+.user-permission-section {
+    &__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 12px 0;
+        border-bottom: 1px solid #E9EAEB;
+    }
+    &__title {
+        font-size: 18px;
+        font-weight: 600;
+        color: $text-dark;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 0;
+    }
+    &__action {
+        flex-shrink: 0;
+        a {
+            font-size: 14px;
+            font-weight: 600;
+            color: $color-primary;
+            text-decoration: none;
+        }
+    }
+    &__body {
+        padding: 16px 0 24px;
+    }
+}
+.icon-info {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+}
+@media (max-width: 767.98px) {
+    .user-permission-section {
+        &__title {
+            font-size: 16px;
+        }
+        &__body {
+            padding-bottom: 16px;
+        }
+    }
+}
+/* End: Team/Role Management */

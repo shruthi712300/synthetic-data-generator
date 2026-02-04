@@ -1,0 +1,20 @@
+/* MENU STYLE */
+
+.page-sidebar {
+	.page-sidebar-menu {
+		> li {
+			border-bottom: 1px solid #2b3b55;
+		}
+	}
+}
+@media (min-width: 992px) {
+	.page-sidebar {
+	  width: 310px;
+	}
+	.page-content-wrapper {
+		.page-content {
+			padding: 20px 32px;
+			margin-left: 310px;
+		}
+	}
+}

@@ -1,0 +1,271 @@
+/* Start: Modal Styles */
+.modal {
+    &-content {
+        padding: 24px;
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    }
+    &-body {
+        padding: 24px;
+    }
+    &-header {
+        padding: 20px 24px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+    }
+    &-title {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px;
+        &__icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #F3EAFF;
+        }
+        &__stack {
+            h3 {
+                font-size: 18px;
+                font-weight: 600 !important;
+                color: $text-dark;
+                margin: 0 0 4px;
+            }
+            p {
+                font-size: 16px;
+                color: $text-main;
+                margin: 0;
+            }
+        }
+    }
+    &-alert {
+        &__icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 16px auto 0;
+            background-color: #FEF3F2;
+            z-index: 1;
+            &:before {
+                content: '';
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #FFE2E0;
+                z-index: -1;
+            }
+            .lucide-icon {
+                font-size: 32px;
+            }
+        }
+        &__main {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 16px 0;
+            h2 {
+                font-size: 24px;
+                font-weight: 600;
+                color: $text-dark;
+                line-height: normal;
+                margin: 0 0 16px;
+            }
+            p {
+                font-size: 16px;
+                color: $text-light;
+                line-height: 24px;
+                margin: 0;
+            }
+        }
+        &__action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 0;
+            .btn {
+                min-width: 130px;
+            }
+        }
+    }
+    span.modal-close {
+        top: 12px;
+        right: 12px;
+        z-index: 1;
+        &:hover {
+            background-color: #FFFFFF;
+        }
+    }
+}
+@media (min-width: 992px) {
+    .modal-dialog {
+        &.modal-lg {
+            max-width: 800px;
+        }
+    }
+}
+@media (min-width: 768px) {
+    .modal-dialog {
+        max-width: 500px;
+    }
+    .modal {
+        &-content {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4 rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+/* End: Modal Styles */
+
+/* Start: Undo Alert */
+.undo-alert {
+    position: fixed;
+    left: 40px;
+    bottom: -40px;
+    border-radius: 8px;
+    background-color: $color-white;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
+    transition: bottom 0.35s ease;
+    opacity: 0;
+    overflow: hidden;
+    &--dark {
+        background-color: $color-dark;
+    }
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 5px 15px 5px 20px;
+    }
+    &__msg {
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 24px;
+        color: $text-white;
+        display: inline-block;
+        strong {
+            font-weight: 500;
+        }
+    }
+    .btn {
+        margin: 0 5px 0 15px;
+        .lucide-icon {
+            margin-top: -2px;
+            margin-right: 2px;
+        }
+    }
+    .icon-remove {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &:hover,
+        &:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            animation: zoomPop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    }
+    .toast-progress {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+    }
+    &.show {
+        opacity: 1;
+        bottom: 40px;
+    }
+}
+@keyframes zoomPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.toast-progress {
+    height: 3px;
+    background: $color-white;
+    width: 100%;
+    border-radius: 2px;
+    margin-top: 8px;
+    transition: width 10s linear;
+    &.shrink {
+        width: 0%;
+    }
+    &.toast-primary {
+        background-color: #D6BBFB;
+    }
+}
+/* End: Undo Alert */
+
+/* Start: Code Mirror */
+.code-mirror {
+    position: relative;
+    display: block;
+    text-align: left !important;
+    border-radius: 8px;
+    padding: 10px 40px 10px 10px !important;
+    margin: 0;
+    color: $text-dark;
+    border: 1px solid #E5E7EB;
+    background-color: #F9FAFB;
+    pre, code {
+        text-align: left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        font-family: monospace;
+        white-space: pre; /* keep formatting but no extra lines */
+        span {
+            display: block;
+            text-align: left;
+            line-height: 24px;
+            color: $text-dark;
+            word-break: break-all;
+            white-space: normal;
+        }
+    }
+}
+.icon-copy-clipboard {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    .lucide-icon {
+        font-size: 16px;
+    }
+    &:hover {
+        background-color: #FFFFFF;
+        .lucide-icon {
+            color: $color-primary !important;
+        }
+    }
+}
+/* End: Code Mirror */

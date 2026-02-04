@@ -1,0 +1,101 @@
+product_id,product_name,category,price,stock_quantity,description,is_active
+1,Yoga Mat Premium,Home & Kitchen,119.99,180,Whey protein isolate chocolate flavor 2lb container,True
+2,Vintage Sunglasses,Sports & Fitness,29.99,100,Set of 4 handcrafted ceramic coffee mugs,False
+3,Organic Coffee Beans,Electronics,89.99,150,Professional running shoes with advanced cushioning technology,False
+4,Running Shoes Pro,Electronics,79.99,75,Adjustable LED desk lamp with USB charging port,True
+5,Running Shoes Pro,Electronics,39.99,0,Genuine leather laptop bag with multiple compartments,False
+6,LED Desk Lamp,Food & Beverages,49.99,500,20000mAh portable charger with fast charging capability,False
+7,Protein Powder Chocolate,Home & Kitchen,49.99,150,Whey protein isolate chocolate flavor 2lb container,True
+8,Portable Phone Charger,Food & Beverages,24.99,200,Non-slip yoga mat with extra cushioning and carrying strap,True
+9,Wireless Bluetooth Headphones,Accessories,29.99,150,Professional running shoes with advanced cushioning technology,True
+10,Vintage Sunglasses,Electronics,29.99,150,Whey protein isolate chocolate flavor 2lb container,True
+11,LED Desk Lamp,Accessories,44.99,100,Set of 4 handcrafted ceramic coffee mugs,True
+12,Leather Laptop Bag,Accessories,44.99,75,Fitness tracking heart rate monitor GPS and smartphone notifications,True
+13,Running Shoes Pro,Accessories,29.99,250,,False
+14,Portable Phone Charger,Food & Beverages,89.99,75,Adjustable LED desk lamp with USB charging port,False
+15,Stainless Steel Water Bottle,Accessories,34.99,500,Insulated water bottle keeps drinks cold for 24 hours,False
+16,Stainless Steel Water Bottle,Home & Kitchen,29.99,250,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+17,Organic Coffee Beans,Home & Kitchen,24.99,350,Insulated water bottle keeps drinks cold for 24 hours,True
+18,Vintage Sunglasses,Electronics,24.99,100,Set of 4 handcrafted ceramic coffee mugs,True
+19,Ceramic Coffee Mug Set,Accessories,299.99,200,Whey protein isolate chocolate flavor 2lb container,True
+20,Organic Coffee Beans,Food & Beverages,89.99,75,Retro-style polarized sunglasses with UV protection,True
+21,Leather Laptop Bag,Home & Kitchen,299.99,350,Set of 4 handcrafted ceramic coffee mugs,True
+22,Leather Laptop Bag,Sports & Fitness,49.99,120,Fitness tracking heart rate monitor GPS and smartphone notifications,True
+23,Organic Coffee Beans,Sports & Fitness,19.99,120,Adjustable LED desk lamp with USB charging port,False
+24,LED Desk Lamp,Food & Beverages,14.99,120,,True
+25,Wireless Bluetooth Headphones,Electronics,119.99,200,Professional running shoes with advanced cushioning technology,True
+26,Stainless Steel Water Bottle,Electronics,44.99,100,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+27,Protein Powder Chocolate,Electronics,119.99,500,Fitness tracking heart rate monitor GPS and smartphone notifications,True
+28,Stainless Steel Water Bottle,Food & Beverages,24.99,150,20000mAh portable charger with fast charging capability,True
+29,Wireless Bluetooth Headphones,Sports & Fitness,39.99,0,Retro-style polarized sunglasses with UV protection,True
+30,Ceramic Coffee Mug Set,Accessories,299.99,100,Retro-style polarized sunglasses with UV protection,True
+31,Leather Laptop Bag,Sports & Fitness,44.99,180,Adjustable LED desk lamp with USB charging port,False
+32,Ceramic Coffee Mug Set,Food & Beverages,49.99,180,Adjustable LED desk lamp with USB charging port,True
+33,Portable Phone Charger,Home & Kitchen,29.99,350,Retro-style polarized sunglasses with UV protection,True
+34,Portable Phone Charger,Electronics,119.99,500,Professional running shoes with advanced cushioning technology,True
+35,Ceramic Coffee Mug Set,Electronics,79.99,350,Genuine leather laptop bag with multiple compartments,False
+36,Ceramic Coffee Mug Set,Accessories,29.99,200,Genuine leather laptop bag with multiple compartments,False
+37,Smart Watch Series 5,Sports & Fitness,29.99,75,,True
+38,Protein Powder Chocolate,Home & Kitchen,29.99,0,20000mAh portable charger with fast charging capability,False
+39,Stainless Steel Water Bottle,Electronics,79.99,200,Premium wireless headphones with noise cancellation and 30-hour battery life,True
+40,Vintage Sunglasses,Accessories,89.99,500,Genuine leather laptop bag with multiple compartments,True
+41,LED Desk Lamp,Sports & Fitness,14.99,120,Fair trade organic coffee beans medium roast 1lb bag,False
+42,Running Shoes Pro,Sports & Fitness,49.99,200,Adjustable LED desk lamp with USB charging port,True
+43,LED Desk Lamp,Sports & Fitness,24.99,180,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+44,Running Shoes Pro,Sports & Fitness,19.99,300,Whey protein isolate chocolate flavor 2lb container,True
+45,Smart Watch Series 5,Electronics,14.99,350,Adjustable LED desk lamp with USB charging port,False
+46,Yoga Mat Premium,Sports & Fitness,14.99,75,Non-slip yoga mat with extra cushioning and carrying strap,True
+47,Wireless Bluetooth Headphones,Home & Kitchen,39.99,100,Retro-style polarized sunglasses with UV protection,False
+48,LED Desk Lamp,Sports & Fitness,79.99,200,Professional running shoes with advanced cushioning technology,True
+49,Wireless Bluetooth Headphones,Electronics,39.99,300,,True
+50,Yoga Mat Premium,Home & Kitchen,34.99,250,Retro-style polarized sunglasses with UV protection,False
+51,Leather Laptop Bag,Electronics,39.99,250,Genuine leather laptop bag with multiple compartments,False
+52,Yoga Mat Premium,Home & Kitchen,29.99,180,Adjustable LED desk lamp with USB charging port,True
+53,Portable Phone Charger,Sports & Fitness,19.99,500,Whey protein isolate chocolate flavor 2lb container,False
+54,Yoga Mat Premium,Sports & Fitness,49.99,500,Professional running shoes with advanced cushioning technology,True
+55,Organic Coffee Beans,Sports & Fitness,299.99,120,20000mAh portable charger with fast charging capability,True
+56,Yoga Mat Premium,Sports & Fitness,39.99,250,,True
+57,Smart Watch Series 5,Home & Kitchen,89.99,0,Professional running shoes with advanced cushioning technology,True
+58,Vintage Sunglasses,Sports & Fitness,89.99,180,Adjustable LED desk lamp with USB charging port,True
+59,Protein Powder Chocolate,Sports & Fitness,34.99,250,Whey protein isolate chocolate flavor 2lb container,True
+60,Ceramic Coffee Mug Set,Electronics,19.99,180,Premium wireless headphones with noise cancellation and 30-hour battery life,False
+61,Protein Powder Chocolate,Accessories,29.99,350,Fair trade organic coffee beans medium roast 1lb bag,True
+62,Ceramic Coffee Mug Set,Accessories,49.99,0,Insulated water bottle keeps drinks cold for 24 hours,False
+63,Leather Laptop Bag,Home & Kitchen,14.99,0,Insulated water bottle keeps drinks cold for 24 hours,False
+64,Protein Powder Chocolate,Accessories,89.99,75,Whey protein isolate chocolate flavor 2lb container,False
+65,LED Desk Lamp,Electronics,29.99,350,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+66,Protein Powder Chocolate,Accessories,299.99,100,,True
+67,Yoga Mat Premium,Home & Kitchen,119.99,75,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+68,Stainless Steel Water Bottle,Accessories,79.99,150,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+69,Stainless Steel Water Bottle,Accessories,19.99,500,Set of 4 handcrafted ceramic coffee mugs,False
+70,Running Shoes Pro,Electronics,44.99,150,Fitness tracking heart rate monitor GPS and smartphone notifications,True
+71,Stainless Steel Water Bottle,Home & Kitchen,19.99,150,Set of 4 handcrafted ceramic coffee mugs,True
+72,Wireless Bluetooth Headphones,Food & Beverages,119.99,0,Professional running shoes with advanced cushioning technology,False
+73,Stainless Steel Water Bottle,Accessories,19.99,500,Set of 4 handcrafted ceramic coffee mugs,False
+74,Wireless Bluetooth Headphones,Accessories,19.99,150,20000mAh portable charger with fast charging capability,True
+75,LED Desk Lamp,Electronics,39.99,0,Professional running shoes with advanced cushioning technology,True
+76,Running Shoes Pro,Electronics,39.99,180,Fair trade organic coffee beans medium roast 1lb bag,False
+77,Organic Coffee Beans,Electronics,29.99,75,Insulated water bottle keeps drinks cold for 24 hours,True
+78,Stainless Steel Water Bottle,Electronics,119.99,100,Professional running shoes with advanced cushioning technology,False
+79,Organic Coffee Beans,Electronics,39.99,300,Professional running shoes with advanced cushioning technology,False
+80,Ceramic Coffee Mug Set,Food & Beverages,119.99,350,Fair trade organic coffee beans medium roast 1lb bag,True
+81,Leather Laptop Bag,Food & Beverages,89.99,180,Non-slip yoga mat with extra cushioning and carrying strap,True
+82,Running Shoes Pro,Accessories,44.99,250,Set of 4 handcrafted ceramic coffee mugs,False
+83,LED Desk Lamp,Electronics,19.99,75,Insulated water bottle keeps drinks cold for 24 hours,True
+84,LED Desk Lamp,Accessories,119.99,350,20000mAh portable charger with fast charging capability,False
+85,Ceramic Coffee Mug Set,Home & Kitchen,19.99,200,Premium wireless headphones with noise cancellation and 30-hour battery life,True
+86,Stainless Steel Water Bottle,Electronics,39.99,120,Genuine leather laptop bag with multiple compartments,False
+87,Stainless Steel Water Bottle,Home & Kitchen,49.99,250,Set of 4 handcrafted ceramic coffee mugs,True
+88,Ceramic Coffee Mug Set,Food & Beverages,79.99,150,,True
+89,Vintage Sunglasses,Home & Kitchen,34.99,120,Professional running shoes with advanced cushioning technology,True
+90,Leather Laptop Bag,Electronics,119.99,300,20000mAh portable charger with fast charging capability,True
+91,Wireless Bluetooth Headphones,Accessories,24.99,100,Professional running shoes with advanced cushioning technology,True
+92,Portable Phone Charger,Electronics,39.99,250,Premium wireless headphones with noise cancellation and 30-hour battery life,True
+93,LED Desk Lamp,Food & Beverages,299.99,350,Set of 4 handcrafted ceramic coffee mugs,False
+94,Wireless Bluetooth Headphones,Food & Beverages,29.99,75,20000mAh portable charger with fast charging capability,False
+95,Wireless Bluetooth Headphones,Sports & Fitness,49.99,350,Set of 4 handcrafted ceramic coffee mugs,True
+96,Wireless Bluetooth Headphones,Home & Kitchen,19.99,250,,True
+97,Ceramic Coffee Mug Set,Sports & Fitness,79.99,75,Premium wireless headphones with noise cancellation and 30-hour battery life,False
+98,Organic Coffee Beans,Food & Beverages,34.99,120,Set of 4 handcrafted ceramic coffee mugs,True
+99,Yoga Mat Premium,Sports & Fitness,34.99,200,Fitness tracking heart rate monitor GPS and smartphone notifications,False
+100,Smart Watch Series 5,Electronics,24.99,350,Genuine leather laptop bag with multiple compartments,False

@@ -1,0 +1,11 @@
+order_id,customer_id,order_date,total_amount,order_status,shipping_address
+1,1,2024-01-15T10:30:00,104.98,completed,123 Main St Apt 4B New York NY 10001
+2,2,2024-01-18T14:22:00,299.99,completed,456 Oak Avenue Los Angeles CA 90012
+3,3,2024-01-20T09:15:00,154.98,shipped,789 Pine Road Chicago IL 60614
+4,1,2024-01-22T16:45:00,79.99,completed,123 Main St Apt 4B New York NY 10001
+5,4,2024-01-25T11:30:00,44.99,processing,321 Elm Street Houston TX 77002
+6,6,2024-01-28T13:20:00,214.97,completed,654 Maple Drive Phoenix AZ 85001
+7,7,2024-02-01T10:00:00,89.99,shipped,987 Cedar Lane Philadelphia PA 19103
+8,9,2024-02-03T15:30:00,169.98,completed,147 Birch Court San Antonio TX 78205
+9,10,2024-02-05T12:15:00,54.98,pending,258 Spruce Way San Diego CA 92101
+10,2,2024-02-08T14:45:00,119.99,shipped,456 Oak Avenue Los Angeles CA 90012
