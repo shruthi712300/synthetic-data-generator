@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Database, ChevronDown, ChevronUp, Save, RotateCcw, Download, AlertCircle, CheckCircle, Info, Eye, Shield, Link as LinkIcon } from 'lucide-react';
 import { generateSampleData, maskPII } from '../utils/dataGenerator';
 import { Step3DataGenerationControls, Step4GeneratedDataPreview } from './StepComponents';
+import Step6CustomErrorCreation from './Step6CustomErrorCreation';
 import { Step5ConfigureErrors, Step6DestinationPreview } from './Step5and6';
 
 const SyntheticDataDashboard = () => {
@@ -74,7 +75,7 @@ const SyntheticDataDashboard = () => {
       name: 'policies',
       description: 'Insurance policy details',
       columns: 15,
-      records: 25,
+      records: 100,
       primaryKey: 'policy_id',
       foreignKeys: ['policyholder_id', 'agent_id'],
       piiFields: [],
@@ -100,7 +101,7 @@ const SyntheticDataDashboard = () => {
       name: 'claims',
       description: 'Insurance claim records',
       columns: 12,
-      records: 30,
+      records: 50,
       primaryKey: 'claim_id',
       foreignKeys: ['policy_id', 'adjuster_id'],
       piiFields: [],
@@ -123,7 +124,7 @@ const SyntheticDataDashboard = () => {
       name: 'policyholders',
       description: 'Corporate policyholders (companies)',
       columns: 18,
-      records: 20,
+      records: 100,
       primaryKey: 'policyholder_id',
       foreignKeys: [],
       piiFields: ['tax_id', 'email', 'phone'],
@@ -152,7 +153,7 @@ const SyntheticDataDashboard = () => {
       name: 'beneficiaries',
       description: 'Employee beneficiaries of corporate policies',
       columns: 14,
-      records: 25,
+      records: 100,
       primaryKey: 'beneficiary_id',
       foreignKeys: ['policyholder_id'],
       piiFields: ['ssn', 'date_of_birth', 'email', 'phone'],
@@ -177,7 +178,7 @@ const SyntheticDataDashboard = () => {
       name: 'payments',
       description: 'Premium payments and claim settlements',
       columns: 11,
-      records: 30,
+      records: 25,
       primaryKey: 'payment_id',
       foreignKeys: ['policy_id', 'claim_id'],
       piiFields: ['bank_account_last4'],
@@ -199,7 +200,7 @@ const SyntheticDataDashboard = () => {
       name: 'training_certification',
       description: 'Agent training and certifications',
       columns: 8,
-      records: 25,
+      records: 30,
       primaryKey: 'certification_id',
       foreignKeys: ['agent_id'],
       piiFields: [],
@@ -235,7 +236,7 @@ const SyntheticDataDashboard = () => {
       name: 'agent_employee_brokers',
       description: 'Insurance agents and brokers',
       columns: 12,
-      records: 20,
+      records: 30,
       primaryKey: 'agent_id',
       foreignKeys: [],
       piiFields: ['email', 'phone', 'ssn'],
@@ -259,11 +260,23 @@ const SyntheticDataDashboard = () => {
   const steps = [
     { number: 1, label: 'Source & Destination' },
     { number: 2, label: 'Detected Schema' },
-    { number: 3, label: 'Data Generation' },
-    { number: 4, label: 'Generated Preview' },
-    { number: 5, label: 'Configure Errors' },
-    { number: 6, label: 'Destination Preview' }
+    { number: 3, label: 'Data Generation Controls' },
+    { number: 4, label: 'Generated Data Preview' },
+    { number: 5, label: 'Configure Errors & View Data' },
+    { number: 6, label: 'Custom Error Creation & AI Suggestions' },
+    { number: 7, label: 'Destination Preview & Save' }
   ];
+
+  <Stepper activeStep={currentStep - 1}>
+    {steps.map((step) => (
+      <Step key={step.number}>
+        <StepButton onClick={() => setCurrentStep(step.number)}>
+          {step.label}
+        </StepButton>
+      </Step>
+    ))}
+  </Stepper>
+
 
   const handleDatabaseSelection = (dbId, isSource = true) => {
     if (isSource) {
@@ -351,7 +364,7 @@ const SyntheticDataDashboard = () => {
       return acc;
     }, 0);
   };
-
+/*
   const getCurrentTableData = (tableName, includeErrors = false) => {
     const table = tables.find(t => t.name === tableName);
     if (!table) return null;
@@ -359,6 +372,35 @@ const SyntheticDataDashboard = () => {
     const config = includeErrors ? errorConfig : {};
     return generateSampleData(tableName, table.records, config);
   };
+*/
+
+//NEW LINE - START
+  const [generatedDataCache, setGeneratedDataCache] = useState({});
+
+  const getCurrentTableData = (tableName, includeErrors = false) => {
+    const table = tables.find(t => t.name === tableName);
+    if (!table) return null;
+
+    const config = includeErrors ? errorConfig : {};
+    const cacheKey = `${tableName}_${includeErrors}_${JSON.stringify(errorConfig)}`;
+    
+    // Return cached data if exists and errorConfig hasn't changed
+    if (generatedDataCache[cacheKey]) {
+      return generatedDataCache[cacheKey];
+    }
+    
+    const data = generateSampleData(tableName, table.records, config);
+    
+    // Cache the generated data
+    setGeneratedDataCache(prev => ({
+      ...prev,
+      [cacheKey]: data
+    }));
+    
+    return data;
+  };
+
+//NEW CODE - END
 
   const renderStepIndicator = () => (
     <div className="step-indicator-container">
@@ -436,8 +478,16 @@ const SyntheticDataDashboard = () => {
           onNext={handleNextStep}
           onPrevious={handlePreviousStep}
         />;
-      
       case 6:
+        return <Step6CustomErrorCreation 
+          errorConfig={errorConfig}
+          onErrorChange={handleErrorChange}
+          tables={detectedTables}
+          onNext={handleNextStep}
+          onPrevious={handlePreviousStep}
+        />;
+
+      case 7:
         return <Step6DestinationPreview 
           tables={detectedTables}
           selectedTable={selectedTable}
@@ -467,6 +517,29 @@ const SyntheticDataDashboard = () => {
 
   return (
     <div className="synthetic-data-dashboard">
+      <div style={{
+        textAlign: 'center',
+        marginBottom: '32px',
+        paddingBottom: '24px',
+        borderBottom: '1px solid var(--border-color)'
+      }}>
+        <h1 style={{
+          fontSize: '32px',
+          fontWeight: '700',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          marginBottom: '8px'
+        }}>
+          Synthetic Data Generator
+        </h1>
+        <p style={{
+          fontSize: '14px',
+          color: 'var(--text-secondary)'
+        }}>
+          Corporate Insurance Data Generation with PII Masking & Error Configuration
+        </p>
+      </div>
       {renderStepIndicator()}
       {renderCurrentStep()}
     </div>
@@ -480,7 +553,7 @@ const Step1DatabaseSelection = ({ databases, destinationDbs, selectedSource, sel
       <div className="card-header">
         <div>
           <h2 className="card-title">Source & Destination Database Selection</h2>
-          <p className="card-subtitle">Select source (Production) and destination (Dev/QA) databases</p>
+          <p className="card-subtitle">Select source (Production) and destination (Dev/QA/Staging) databases</p>
         </div>
       </div>
 
@@ -511,7 +584,7 @@ const Step1DatabaseSelection = ({ databases, destinationDbs, selectedSource, sel
 
         <div>
           <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: 'var(--text-primary)' }}>
-            Destination Database (Dev/QA)
+            Destination Database (Dev/QA/Staging)
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {destinationDbs.map(db => (

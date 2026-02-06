@@ -206,6 +206,7 @@ const App = () => {
       
       {/* After login, go to home/dashboard */}
       <Route path="/home" element={<LegacyUI page="index.html" />} />
+      <Route path="/index" element={<LegacyUI page="index.html" />} />
       <Route path="/connectors" element={<LegacyUI page="connectors.html" />} />
       <Route path="/connection-status" element={<LegacyUI page="connection-status.html" />} />
       <Route path="/available-destination" element={<LegacyUI page="available-destination.html" />} />
@@ -216,6 +217,9 @@ const App = () => {
           <SyntheticDataDashboard />
         </Layout>
       } />
+      
+      {/* Add a catch-all route for legacy navigation */}
+      <Route path="*" element={<LegacyUI />} />
     </Routes>
   );
 }; 

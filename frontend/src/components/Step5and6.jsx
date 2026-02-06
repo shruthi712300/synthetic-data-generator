@@ -166,9 +166,9 @@ export const Step5ConfigureErrors = ({ errorConfig, behaviorRules, onErrorChange
 
         <div className="table-selector">
           {tables.map(table => {
-            const hasErrors = Object.keys(errorConfig).some(key => 
-              errorConfig[key] > 0 && getAffectedTables(key).includes(table.name)
-            );
+            const tableData = getCurrentTableData(table.name, true);
+            const hasErrors = tableData && tableData.some(row => row._hasError);
+            
             return (
               <button
                 key={table.name}
