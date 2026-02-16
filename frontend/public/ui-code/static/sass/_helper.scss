@@ -1,0 +1,473 @@
+/* HELPERS STYLE */
+body {
+  background-color: #F9F9F9;
+}
+.lucide-icon {
+  font-family: "LucideIcons";
+  font-size: 20px;
+  color: #A4A7AE !important;
+  width: 20px !important;
+  height: 20px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.page-bg-white {
+  background-color: $color-white;
+}
+.visibility-hidden {
+  visibility: hidden !important;
+}
+.no-padding {
+  padding: 0 !important;
+}
+.z-index-0 {
+  z-index: 0 !important;
+}
+.border-0 {
+  border: none !important;
+}
+.w-25 {
+  width: 25% !important;
+}
+.w-35 {
+  width: 35% !important;
+}
+.w-50 {
+  width: 50% !important;
+}
+.w-75 {
+  width: 75% !important;
+}
+.w-100 {
+  width: 100% !important;
+}
+.h-100 {
+  height: 100% !important;
+}
+.h-68px {
+  height: 68px !important;
+}
+.fs-14 {
+  font-size: 14px !important;
+}
+.fs-16 {
+  font-size: 16px !important;
+}
+.fw-400 {
+  font-weight: 400 !important;
+}
+.fw-500 {
+  font-weight: 500 !important;
+}
+.fw-600 {
+  font-weight: 600 !important;
+}
+.bg-brand-green {
+  background-color: #2de5a7;
+}
+.bg-primary {
+  background-color: $color-primary !important;
+}
+.badge-danger {
+  background-color: $color-pink;
+}
+.icon-currentColor {
+  color: currentColor !important;
+}
+.btn-icon-primary-light {
+  color: #D6BBFB !important;
+}
+.btn-icon-danger-light {
+  color: #FFC0BB !important;
+}
+.tbl-view {
+  display: table;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+.tbl-cell-view {
+  display: table-cell;
+  vertical-align: middle;
+}
+.va-m {
+  vertical-align: middle;
+}
+.mt-0 {
+  margin-top: 0 !important;
+}
+.mt-10 {
+  margin-top: 10px !important;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-10 {
+  margin-bottom: 10px !important;
+}
+.ml-5 {
+  margin-left: 5px !important;
+}
+.mb-8 {
+  margin-bottom: 8px !important;
+}
+.mb-15 {
+  margin-bottom: 15px !important;
+}
+.mb-16 {
+  margin-bottom: 16px !important;
+}
+.mb-20 {
+  margin-bottom: 20px !important;
+}
+.mb-24 {
+  margin-bottom: 24px !important;
+}
+.ml-0 {
+  margin-left: 0 !important;
+}
+.mlr-0 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.mr-5 {
+  margin-right: 5px !important;
+}
+.mr-15 {
+  margin-right: 15px;
+}
+.mr-16 {
+  margin-right: 16px !important;
+}
+.margin-bottom-30 {
+  margin-bottom: 30px !important;
+}
+.p-0 {
+  padding: 0 !important;
+}
+.pb-0 {
+  padding-bottom: 0 !important;
+}
+.pb-24 {
+  padding-bottom: 24px !important;
+}
+.pl-0 {
+  padding-left: 0 !important;
+}
+.pl-20 {
+  padding-left: 20px !important;
+}
+.pt-10 {
+  padding-top: 10px !important;
+}
+.pr-0 {
+  padding-right: 0;
+}
+.pr-0 {
+  padding-right: 0 !important;
+}
+.px-0 {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.px-10 {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+.py-24 {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+.py-48 {
+  padding-top: 48px !important;
+  padding-bottom: 48px !important;
+}
+.pos-r {
+  position: relative;
+}
+.well-del-btn-pos {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+.scroll-y {
+  overflow-y: auto;
+}
+.border-radius-8 {
+  border-radius: 8px !important;
+}
+.warning-loader {
+  width: 30px;
+  height: auto;
+  margin-right: 15px;
+}
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.alert-full-height {
+  height: calc(100% - 20px);
+}
+.display-block {
+  display: block !important;
+}
+.display-none {
+  display: none !important;
+}
+.display-inline-flex {
+  display: inline-flex !important;
+}
+.flex-grow-1 {
+  flex-grow: 1 !important;
+}
+.error-text {
+  font-size: 13px;
+  color: $color-danger;
+  margin: 5px 0 0;
+  display: inline-block;
+}
+.portlet-placeholder {
+  min-height: 300px;
+  text-align: center;
+  padding: 80px 0 50px;
+  img {
+    opacity: 0.5;
+    max-width: 180px;
+  }
+  h4 {
+    font-weight: 500;
+    margin: 0;
+  }
+}
+.status-success {
+  color: #067647;
+  background-color: #ECFDF3;
+  border-color: #ABEFC6;
+  &:hover {
+    color: #067647;
+  }
+}
+.status-warning {
+  color: #fff;
+  background-color: #ff851b;
+  border-color: #ff851b;
+  &:hover {
+    color: #fff;
+  }
+}
+.status-danger {
+  color: #fff;
+  background-color: #ff4136;
+  border-color: #ff4136;
+  &:hover {
+    color: #fff;
+  }
+}
+.has-selection-tick {
+  position: relative;
+  padding-right: 30px;
+  &:before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #888;
+    border-radius: 30px;
+  }
+  &:after {
+    content: "\f00c";
+    font-size: 17px;
+    position: absolute;
+    right: 6px;
+    top: 4px;
+    color: #fff;
+    display: inline-block;
+    font-family: FontAwesome;
+  }
+}
+/* Start: Display */
+.d-flex {
+  display: flex !important;
+}
+.align-items-center {
+  align-items: center !important;
+}
+.align-items-start {
+  align-items: flex-start !important;
+}
+.justify-content-center {
+  justify-content: center !important;
+}
+.justify-content-end {
+  justify-content: flex-end !important;
+}
+.justify-content-between {
+  justify-content: space-between !important;
+}
+/* End: Display */
+/* Start: Text color */
+.text-left {
+  text-align: left !important;
+}
+.text-primary {
+  color: $color-primary !important;
+}
+.text-error {
+  color: #F97066 !important;
+}
+.text-success {
+  color: $color-green !important;
+}
+.text-tertiary {
+  color: $text-light !important;
+}
+.text-main {
+  color: $text-main !important;
+}
+.text-light {
+  color: #9399a6 !important;
+}
+.text-dark {
+  color: $text-dark !important;
+}
+.text-light-gray {
+  color: $text-light !important;
+}
+.text-muted {
+  color: #707070 !important;
+}
+.text-gray {
+  color: $text-light !important;
+}
+@media (min-width: 768px) {
+  .text-sm-right {
+    text-align: right !important;
+  }
+}
+/* End: Text color */
+/* Start: bg Color */
+.bg-light-primary {
+  background-color: #F9F5FF !important;
+}
+/* End: bg Color */
+/* Start: Label */
+.label {
+  color: #414651;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  &.label-success {
+    border-color: #ABEFC6 !important;
+    background-color: #ECFDF3 !important;
+  }
+  &.label-failed {
+    border-color: #FECDCA !important;
+    background-color: #FEF3F2 !important;
+  }
+  &.label-info {
+    border-color: #B2DDFF !important;
+    background-color: #EFF8FF !important;
+  }
+  &.label-default {
+    border-color: #E9EAEB !important;
+    background-color: #FAFAFA !important;
+  }
+}
+.badge {
+  &.badge-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px !important;
+    height: auto !important;
+    line-height: 18px;
+    font-weight: 500;
+    color: $text-main;
+    padding: 2px 6px;
+    border-radius: 6px !important;
+    border: 1px solid #D5D7DA;
+    box-shadow: 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+  }
+  &.badge-light {
+    background-color: $color-white;
+  }
+}
+/* End: Label */
+/* Start: Tooltip */
+.tooltip {
+  position: relative;
+  opacity: 1;
+  z-index: 0;
+}
+.tooltipster-sidetip {
+  .tooltipster-content {
+    font-size: 12px;
+    line-height: 18px;
+    padding: 4px 10px;
+    text-align: center;
+    cursor: default;
+  }
+  .tooltipster-box {
+    background: #000;
+    border-radius: 8px;
+  }
+  &.tooltipster-top {
+    .tooltipster-arrow-background {
+      border-top-color: #000;
+    }
+  }
+  &.tooltipster-right {
+    .tooltipster-arrow-background {
+      border-right-color: #000;
+    }
+  }
+  &.tooltipster-bottom {
+    .tooltipster-arrow-background {
+      border-bottom-color: #000;
+    }
+  }
+  &.tooltipster-left {
+    .tooltipster-arrow-background {
+      border-left-color: #000;
+    }
+  }
+}
+.tooltip-templates {
+  ul.role-permission-list {
+    padding-left: 0;
+    margin-bottom: 0;
+    text-align: left;
+    li {
+      list-style-type: none;
+      padding: 4px 0;
+      & + li {
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+      }
+    }
+  }
+}
+/* End: Tooltip */
+@media (max-width: 767.78px) {
+  .lucide-icon {
+    font-size: 18px;
+    width: 18px !important;
+    height: 18px;
+  }
+  .w-sm-100 {
+    width: 100% !important;
+  }
+  .pb-sm-16px {
+    padding-bottom: 16px !important;
+  }
+}
+@media (max-width: 1199.98px) {
+  .mb-lg-20px {
+    margin-bottom: 20px !important;
+  }
+}

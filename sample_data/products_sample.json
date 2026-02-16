@@ -1,0 +1,110 @@
+[
+  {
+    "product_id": 1,
+    "product_name": "Wireless Bluetooth Headphones",
+    "category": "Electronics",
+    "price": 79.99,
+    "stock_quantity": 150,
+    "description": "Premium wireless headphones with noise cancellation and 30-hour battery life",
+    "is_active": true
+  },
+  {
+    "product_id": 2,
+    "product_name": "Stainless Steel Water Bottle",
+    "category": "Home & Kitchen",
+    "price": 24.99,
+    "stock_quantity": 300,
+    "description": "Insulated water bottle keeps drinks cold for 24 hours",
+    "is_active": true
+  },
+  {
+    "product_id": 3,
+    "product_name": "Yoga Mat Premium",
+    "category": "Sports & Fitness",
+    "price": 34.99,
+    "stock_quantity": 200,
+    "description": "Non-slip yoga mat with extra cushioning and carrying strap",
+    "is_active": true
+  },
+  {
+    "product_id": 4,
+    "product_name": "Smart Watch Series 5",
+    "category": "Electronics",
+    "price": 299.99,
+    "stock_quantity": 75,
+    "description": "Fitness tracking, heart rate monitor, GPS, and smartphone notifications",
+    "is_active": true
+  },
+  {
+    "product_id": 5,
+    "product_name": "Organic Coffee Beans",
+    "category": "Food & Beverages",
+    "price": 14.99,
+    "stock_quantity": 500,
+    "description": "Fair trade organic coffee beans, medium roast, 1lb bag",
+    "is_active": true
+  },
+  {
+    "product_id": 6,
+    "product_name": "Leather Laptop Bag",
+    "category": "Accessories",
+    "price": 89.99,
+    "stock_quantity": 100,
+    "description": "Genuine leather laptop bag with multiple compartments",
+    "is_active": true
+  },
+  {
+    "product_id": 7,
+    "product_name": "LED Desk Lamp",
+    "category": "Home & Kitchen",
+    "price": 39.99,
+    "stock_quantity": 180,
+    "description": "Adjustable LED desk lamp with USB charging port",
+    "is_active": true
+  },
+  {
+    "product_id": 8,
+    "product_name": "Running Shoes Pro",
+    "category": "Sports & Fitness",
+    "price": 119.99,
+    "stock_quantity": 120,
+    "description": "Professional running shoes with advanced cushioning technology",
+    "is_active": true
+  },
+  {
+    "product_id": 9,
+    "product_name": "Portable Phone Charger",
+    "category": "Electronics",
+    "price": 29.99,
+    "stock_quantity": 250,
+    "description": "20000mAh portable charger with fast charging capability",
+    "is_active": true
+  },
+  {
+    "product_id": 10,
+    "product_name": "Ceramic Coffee Mug Set",
+    "category": "Home & Kitchen",
+    "price": 19.99,
+    "stock_quantity": 350,
+    "description": "Set of 4 handcrafted ceramic coffee mugs",
+    "is_active": true
+  },
+  {
+    "product_id": 11,
+    "product_name": "Vintage Sunglasses",
+    "category": "Accessories",
+    "price": 49.99,
+    "stock_quantity": 0,
+    "description": "Retro-style polarized sunglasses with UV protection",
+    "is_active": false
+  },
+  {
+    "product_id": 12,
+    "product_name": "Protein Powder Chocolate",
+    "category": "Food & Beverages",
+    "price": 44.99,
+    "stock_quantity": 200,
+    "description": "Whey protein isolate, chocolate flavor, 2lb container",
+    "is_active": true
+  }
+]

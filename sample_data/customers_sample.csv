@@ -1,0 +1,11 @@
+customer_id,first_name,last_name,email,phone,date_of_birth,registration_date,status
+1,John,Smith,john.smith@email.com,+1-555-0101,1985-03-15,2023-01-15T10:30:00,active
+2,Sarah,Johnson,sarah.j@email.com,+1-555-0102,1990-07-22,2023-02-20T14:15:00,active
+3,Michael,Williams,m.williams@email.com,+1-555-0103,1988-11-30,2023-03-10T09:45:00,active
+4,Emily,Brown,emily.brown@email.com,,1995-05-18,2023-04-05T16:20:00,active
+5,David,Davis,david.d@email.com,+1-555-0105,1982-09-08,2023-05-12T11:00:00,inactive
+6,Lisa,Martinez,lisa.martinez@email.com,+1-555-0106,1992-12-25,2023-06-18T13:30:00,active
+7,James,Garcia,james.garcia@email.com,+1-555-0107,1987-04-14,2023-07-22T15:45:00,active
+8,Jennifer,Rodriguez,j.rodriguez@email.com,,1993-08-07,2023-08-30T10:15:00,pending
+9,Robert,Wilson,robert.wilson@email.com,+1-555-0109,1986-02-28,2023-09-14T12:00:00,active
+10,Amanda,Taylor,amanda.t@email.com,+1-555-0110,1991-06-19,2023-10-08T14:30:00,active

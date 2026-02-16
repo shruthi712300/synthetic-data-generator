@@ -1,0 +1,17 @@
+#datatreeview ul {
+	padding-left:20px;
+}
+#datatreeview li {
+	list-style:none;
+}
+#datatreeview ul.hide {
+	display:none;
+}
+#datatreeview span {
+	color:#999;
+	font-family:"Courier New", Courier, monospace;
+	cursor:default;
+}
+#datatreeview span.expanded, #datatreeview span.collapsed {
+	cursor:pointer;
+}

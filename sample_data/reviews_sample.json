@@ -1,0 +1,98 @@
+[
+  {
+    "review_id": 1,
+    "product_id": 1,
+    "customer_id": 1,
+    "rating": 5,
+    "review_text": "Excellent headphones! The sound quality is amazing and battery life is exactly as advertised.",
+    "review_date": "2024-01-20T15:30:00"
+  },
+  {
+    "review_id": 2,
+    "product_id": 2,
+    "customer_id": 1,
+    "rating": 4,
+    "review_text": "Good water bottle, keeps drinks cold as promised. Only issue is it's a bit heavy when full.",
+    "review_date": "2024-01-22T10:15:00"
+  },
+  {
+    "review_id": 3,
+    "product_id": 4,
+    "customer_id": 2,
+    "rating": 5,
+    "review_text": "Best smartwatch I've owned. All features work perfectly and it looks great!",
+    "review_date": "2024-01-25T14:20:00"
+  },
+  {
+    "review_id": 4,
+    "product_id": 8,
+    "customer_id": 3,
+    "rating": 5,
+    "review_text": "Perfect running shoes. Very comfortable and great support for long runs.",
+    "review_date": "2024-01-28T09:45:00"
+  },
+  {
+    "review_id": 5,
+    "product_id": 3,
+    "customer_id": 3,
+    "rating": 4,
+    "review_text": "Nice yoga mat with good cushioning. The carrying strap is very convenient.",
+    "review_date": "2024-01-30T16:00:00"
+  },
+  {
+    "review_id": 6,
+    "product_id": 12,
+    "customer_id": 4,
+    "rating": 5,
+    "review_text": "Great tasting protein powder! Mixes well and good value for money.",
+    "review_date": "2024-02-02T11:30:00"
+  },
+  {
+    "review_id": 7,
+    "product_id": 1,
+    "customer_id": 7,
+    "rating": 4,
+    "review_text": "Very good headphones for the price. Noise cancellation works well on flights.",
+    "review_date": "2024-02-05T13:15:00"
+  },
+  {
+    "review_id": 8,
+    "product_id": 6,
+    "customer_id": 7,
+    "rating": 5,
+    "review_text": "Beautiful leather bag with excellent craftsmanship. Fits my 15-inch laptop perfectly.",
+    "review_date": "2024-02-06T10:00:00"
+  },
+  {
+    "review_id": 9,
+    "product_id": 8,
+    "customer_id": 9,
+    "rating": 5,
+    "review_text": "These shoes are incredible! My running times have improved and no more foot pain.",
+    "review_date": "2024-02-10T08:30:00"
+  },
+  {
+    "review_id": 10,
+    "product_id": 7,
+    "customer_id": 9,
+    "rating": 4,
+    "review_text": "Good desk lamp. The USB port is very handy for charging devices.",
+    "review_date": "2024-02-12T14:45:00"
+  },
+  {
+    "review_id": 11,
+    "product_id": 10,
+    "customer_id": 10,
+    "rating": 5,
+    "review_text": "Beautiful mugs! They're the perfect size and the quality is outstanding.",
+    "review_date": "2024-02-14T12:00:00"
+  },
+  {
+    "review_id": 12,
+    "product_id": 5,
+    "customer_id": 10,
+    "rating": 5,
+    "review_text": "Best coffee I've had! The flavor is rich and smooth. Will definitely buy again.",
+    "review_date": "2024-02-15T09:20:00"
+  }
+]

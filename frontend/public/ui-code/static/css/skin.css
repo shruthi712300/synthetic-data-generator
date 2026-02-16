@@ -1,0 +1,513 @@
+
+
+/* === Login === */
+
+.page-core {
+    background-color: #E7EAEB;
+}
+.page-core.page-login {
+    background-color: #030e2d;
+    /*background-color: #000131;*/
+}
+/* === Header === */
+
+#header .loqle-header-logo, #header .header-dropdown, #header .header-date {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+#header .nav-right > li > a, #header .nav-left > li > a {
+    color: rgba(255, 255, 255, 1);
+}
+#header, #header .nav-left>li, #header .nav-right>li, #header .search {
+    background-color: #030e2d;
+}
+#header .branding {
+    background-color: #030e2d;
+}
+.pageheader {
+    margin-bottom: 20px;
+}
+
+/* === body === */
+body  {
+    background-color: #fff;
+}
+
+/* ------------------------------------------------------- */
+/* === Dashborad === */
+
+.track-info .tile-header {
+    background-color: #fafafa;
+    color: #030e2d;
+}
+.pageheader .page-bar .page-breadcrumb > li:first-child > a {
+    color: rgba(255, 255, 255, 1);
+}
+.pageheader .page-bar .page-breadcrumb > li:first-child {
+	background-color: #030e2d;
+}
+
+
+/* ------------------------------------------------------- */
+/* === Navigation === */
+
+#sidebar, #navigation {
+    background-color: #030e2d;
+}
+#navigation > li.active > a {
+    background-color: #fff;
+    color: #000;
+}
+#navigation > li a {
+    color: #bbb;
+}
+#sidebar uib-accordion .panel-group .panel > .panel-heading .panel-title > a {
+    color: rgba(255, 255, 255, 1);
+}
+.text-gray {
+    color: #B5B5B5;
+}
+ 
+ .head-wrap,
+ .welcome-section{
+    text-align: center;
+ }
+ .welcome-section{
+    margin: 50px 0;
+ }
+ .welcome-section img{
+    max-width: 150px;
+    margin: 0 auto;
+ }
+.welcome-section h4{
+    color: #030e2d;
+    font-weight: bold;
+    padding: 20px 0;
+}
+.btn.btn-yellow {
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+  color: #1e2023;
+}
+
+.btn.btn-yellow:hover, .btn.btn-yellow:active, .btn.btn-yellow.active {
+  background-color: #1e2023;
+  border-color: #1e2023;
+  color: #ffcc00;
+}
+
+.btn.btn-yellow:active, .btn.btn-yellow.active {
+  background-color: #1e2023;
+  border-color: #ffcc00;
+}
+.btn-lg{
+    max-width: 400px;
+    width: 100%;
+}
+.btn.btn-orange:hover,
+.btn.btn-orange:focus{
+    background: #030e2d;
+    border-color: #030e2d;
+    color: #ffffff;
+}
+.rj-logo-grid {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin: -10px;
+    padding: 0;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    list-style: none;
+}
+.connector-section{
+    text-align: center;
+}
+.connection-grid {
+    margin-top: 22px;
+    margin-right: auto;
+    text-align: center;
+    font-size: 0;
+    display: inline-block;
+    margin-left: auto;
+    max-width: 1005px;
+}
+.rj-logo-grid > li {
+    margin: 10px;
+    display: inline-block;
+    width: 315px;
+    min-width: 315px;
+}
+.rj-logo-grid .logo-grid-item {
+    position: relative;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    color: #444;
+    text-decoration: none;
+    text-shadow: none;
+    background: none;
+    box-shadow: none;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid #d2d0d0;
+    border-radius: 4px;
+    display: block;
+    position: relative;
+    padding: 26px;
+    width: 100%;
+    height: 140px;
+    max-height: 140px;
+    background-color: #ffffff;
+    -webkit-transition: box-shadow .5s;
+    transition: box-shadow .5s;
+}
+.rj-logo-grid .logo-grid-item:hover {
+    box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.1);
+    -webkit-transition: box-shadow .5s;
+    transition: box-shadow .5s;
+    background-color: #ffffff;
+}
+.rj-status-pills-container {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+.rj-status-pill {
+    border: none;
+    border-radius: 0.9em;
+    color: #ffffff;
+    text-transform: uppercase;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0.5em 1em 0.333em 1em;
+    font-size: 12px;
+    font-weight: 600;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin-left: 5px;
+    letter-spacing: 1px;
+    line-height: 1em;
+}
+.beta {
+    background: #4a89e5;
+}
+.beta:after {
+    content: "beta";
+}
+.coming-soon {
+    background: #ed4040;
+}
+.coming-soon:after {
+    content: "coming soon";
+}
+.rj-logo-grid .logo-grid-item .logo {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.connection-grid .logo-grid-item.adroll > .logo {
+    background-image: url(../images/logo-adroll.svg);
+}
+.connection-grid .logo-grid-item.aurora > .logo {
+    background-image: url(../images/logo-amazon-rds.svg);
+}
+.connection-grid .logo-grid-item.autopilothq > .logo {
+    background-image: url(../images/logo-autopilothq.svg);
+}
+.connection-grid .logo-grid-item.bingads > .logo {
+    background-image: url(../images/logo-bing-ads.svg);
+}
+.connection-grid .logo-grid-item.closeio > .logo {
+    background-image: url(../images/logo-closeio.svg);
+}
+.connection-grid .logo-grid-item.apple > .logo {
+    background-image: url(../images/apple.png);
+}
+.connection-grid .logo-grid-item.deskdotcom > .logo {
+    background-image: url(../images/logo-desk.svg);
+}
+.connection-grid .logo-grid-item.deskdotcom > .logo {
+    background-image: url(../images/logo-desk.svg);
+}
+.connection-grid .logo-grid-item.deskdotcom > .logo {
+    background-image: url(../images/logo-desk.svg);
+}
+.connection-grid .logo-grid-item.analyticpipeline > .logo {
+    background-image: url(../images/analyticpipeline.png);
+}
+.connection-grid .logo-grid-item.customer > .logo {
+    background-image: url(../images/customer.png);
+}
+.connection-grid .logo-grid-item.android > .logo {
+    background-image: url(../images/android.png);
+}
+.connection-grid .logo-grid-item.addresscleaning > .logo {
+    background-image: url(../images/addresscleaning.jpg);
+}
+.connection-grid .logo-grid-item.telematics > .logo {
+    background-image: url(../images/telematics.png);
+}
+.connection-grid .logo-grid-item.oracleebs > .logo {
+    background-image: url(../images/oracleebs.png);
+}
+.connection-grid .logo-grid-item.dataquality > .logo {
+    background-image: url(../images/dataquality.png);
+}
+.connection-grid .logo-grid-item.mqtt > .logo {
+    background-image: url(../images/mqtt.png);
+}
+.connection-grid .logo-grid-item.imagepipeline > .logo {
+    background-image: url(../images/imagepipeline.png);
+}
+.connection-grid .logo-grid-item.dataCleanIcon > .logo {
+    background-image: url(../images/dataCleanIcon.png);
+}
+
+
+
+
+.connection-grid .logo-grid-item.arduino > .logo {
+    background-image: url(../images/arduino.png);
+}
+.connection-grid .logo-grid-item.postgres > .logo {
+    background-image: url(../images/postgres.png);
+}
+.connection-grid .logo-grid-item.mongo > .logo {
+    background-image: url(../images/mongo.png);
+}
+.connection-grid .logo-grid-item.google > .logo {
+    background-image: url(../images/google.png);
+}
+.connection-grid .logo-grid-item.hadoop > .logo {
+    background-image: url(../images/hadoop.png);
+}
+.connection-grid .logo-grid-item.couchbase > .logo {
+    background-image: url(../images/couchbase.png);
+}
+.connection-grid .logo-grid-item.teradata > .logo {
+    background-image: url(../images/teradata.png);
+}
+.connection-grid .logo-grid-item.mysql > .logo {
+    background-image: url(../images/mysql.png);
+}
+
+.connection-grid .logo-grid-item.fixer > .logo {
+    background-image: url(../images/fixer.png);
+}
+.connection-grid .logo-grid-item.goShippo > .logo {
+    background-image: url(../images/goShippo.png);
+}
+.connection-grid .logo-grid-item.hubspot > .logo {
+    background-image: url(../images/hubspot.png);
+}
+.connection-grid .logo-grid-item.marketo > .logo {
+    background-image: url(../images/marketo.png);
+}
+.connection-grid .logo-grid-item.github > .logo {
+    background-image: url(../images/github.png);
+}
+.connection-grid .logo-grid-item.microsoftsqlserver > .logo {
+    background-image: url(../images/microsoftsqlserver.png);
+}
+.connection-grid .logo-grid-item.druid > .logo {
+    background-image: url(../images/druid.png);
+}
+.connection-grid .logo-grid-item.facebook > .logo {
+    background-image: url(../images/facebook.png);
+}
+.connection-grid .logo-grid-item.saperp > .logo {
+    background-image: url(../images/saperp.png);
+}
+.connection-grid .logo-grid-item.closeio > .logo {
+    background-image: url(../images/closeio.png);
+}
+.connection-grid .logo-grid-item.saasquatch > .logo {
+    background-image: url(../images/saasquatch.png);
+}
+.connection-grid .logo-grid-item.freshdesk > .logo {
+    background-image: url(../images/freshdesk.png);
+}
+.connection-grid .logo-grid-item.salesforce > .logo {
+    background-image: url(../images/salesforce.png);
+}
+.connection-grid .logo-grid-item.braintree > .logo {
+    background-image: url(../images/braintree.png);
+}
+.connection-grid .logo-grid-item.gitlab > .logo {
+    background-image: url(../images/gitlab.png);
+}
+.connection-grid .logo-grid-item.wootric > .logo {
+    background-image: url(../images/wootric.png);
+}
+.connection-grid .logo-grid-item.outbrain > .logo {
+    background-image: url(../images/outbrain.png);
+}
+.connection-grid .logo-grid-item.harvest > .logo {
+    background-image: url(../images/harvest.png);
+}
+.connection-grid .logo-grid-item.presto > .logo {
+    background-image: url(../images/presto.png);
+}
+.connection-grid .logo-grid-item.elastic > .logo {
+    background-image: url(../images/elastic.png);
+}
+.connection-grid .logo-grid-item.vertica > .logo {
+    background-image: url(../images/vertica.png);
+}
+.connection-grid .logo-grid-item.oracle > .logo {
+    background-image: url(../images/oracle.png);
+}
+.connection-grid .logo-grid-item.twitter > .logo {
+    background-image: url(../images/twitter.png);
+}
+.connection-grid .logo-grid-item.s3 > .logo {
+    background-image: url(../images/s3.png);
+}
+.connection-grid .logo-grid-item.redshift > .logo {
+    background-image: url(../images/redshift.png);
+}
+.connection-grid .logo-grid-item.googlebig > .logo {
+    background-image: url(../images/googlebig.png);
+}
+.connection-grid .logo-grid-item.solr > .logo {
+    background-image: url(../images/solr.png);
+}
+.connection-grid .logo-grid-item.icon_anomaly-detection > .logo {
+    background-image: url(../images/icon_anomaly-detection.svg);
+}
+.connection-grid .logo-grid-item.location_graph > .logo {
+    background-image: url(../images/location_graph.png);
+}
+
+
+.connection-grid .logo-grid-item.icon_customer720 > .logo {
+    background-image: url(../images/icon_customer720.svg);
+}
+.connection-grid .logo-grid-item.sentiment > .logo {
+    background-image: url(../images/sentiment.png);
+}
+.connection-grid .logo-grid-item.icon_custom-pipelines > .logo {
+    background-image: url(../images/icon_custom-pipelines.svg);
+}
+
+.connection-grid .logo-grid-item.icon_data-pipelines > .logo {
+    background-image: url(../images/icon_data-pipelines.svg);
+}
+
+.connection-grid .logo-grid-item.icon_data-quality-deduplication > .logo {
+    background-image: url(../images/icon_data-quality-deduplication.svg);
+}
+
+.connection-grid .logo-grid-item.icon_event-pipelines > .logo {
+    background-image: url(../images/icon_event-pipelines.svg);
+}
+
+.head-tabs ul.nav{
+    max-width: 800px;
+    margin: 25px auto;
+}
+.head-tabs .nav-tabs.nav-justified > li > a {
+    font-weight: bold;
+}
+.description{
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+.description h4{
+    font-weight: bold;
+}
+.form-group label{
+    font-weight: bold;
+}
+.rj-logo-grid .logo-grid-item small {
+    position: absolute;
+    color: #000;
+    left: 0;
+    bottom: 0;
+    display: inline-block;
+    z-index: 99;
+    font-size: 14px;
+    padding: 5px 10px;
+    font-weight: 600;
+    background-color: #F5EEF5;
+    border-radius: 4px; }
+
+.rj-logo-grid .logo-grid-item .tile_title {
+    position: absolute;
+    color: #000;
+    left: 38%;
+    top: 0;
+    display: inline-block;
+    z-index: 99;
+    font-size: 13px;
+    padding: 5px 10px;
+    font-weight: 600;
+    border-radius: 4px; }
+
+
+.dot {
+overflow: hidden;
+border-style:solid;
+border-width: 2px;
+border-color: #666;
+padding-top: 6px;
+padding-left: 6px;
+width: 20px;
+height: 20px;
+display: inline-block;
+border-radius: 50%;
+margin: 0.2em 0.4em 0.2em 0;
+vertical-align:middle;
+line-height: 32px;
+background: #cccccc;
+-webkit-box-shadow: inset 0 -6px 6px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+-moz-box-shadow: inset 0 -6px 6px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+box-shadow: inset -6px -6px 6px rgba(0, 0, 0, 0.3), inset 3px 3px 6px rgba(255, 255, 255, 0.3);
+}
+.dot-inner {
+background: white;
+opacity:0.35;
+filter:alpha(opacity=35);
+-webkit-box-shadow: 0px 0px 6px 3px rgba(255, 255, 255, 1);
+-moz-box-shadow: 0px 0px 6px 3px rgba(255, 255, 255, 1);
+box-shadow: 0px 0px 6px 3px rgba(255, 255, 255, 1);
+border-radius: 50%;
+overflow: hidden;
+width: 6px;
+height: 6px;
+display: block;
+line-height: 0;
+}
+.dot-red {
+background: #990000;
+}
+.dot-green {
+background: #009900;
+}
+
+.tbcls {
+    border-collapse: collapse;
+    border: 2px solid black;
+
+    width: 20%;
+}
+
+
+.tbcell {
+    border: 1.5px solid black;
+    text-align: center;
+
+}
