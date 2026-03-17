@@ -95,7 +95,7 @@ const formatCurrency = (amount) => {
   return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
-// ---------- Deterministic error injection (unchanged) ----------
+// ---------- Deterministic error injection ----------
 const shouldApplyError = (recordIndex, totalRecords, errorPercentage, errorType) => {
   if (errorPercentage === 0) return false;
   const errorCount = Math.round((totalRecords * errorPercentage) / 100);
@@ -278,7 +278,87 @@ const evaluateCondition = (value, operator, target) => {
   return false;
 };
 
-// ---------- Custom Error Injection (FIXED: sets _hasError) ----------
+// ---------- SQL WHERE clause evaluator (simple, safe) ----------
+const evaluateSqlWhere = (whereClause, row) => {
+  if (!whereClause || whereClause.trim() === '') return true;
+  
+  try {
+    const cleanWhere = whereClause.trim();
+    const columns = Object.keys(row);
+    let jsExpr = cleanWhere.replace(/([a-zA-Z_][a-zA-Z0-9_]*)/g, (match) => {
+      if (columns.includes(match)) {
+        return `row.${match}`;
+      }
+      return match;
+    });
+    jsExpr = jsExpr.replace(/===?/g, '===');
+    jsExpr = jsExpr.replace(/([^<>!])=([^=])/g, '$1===$2');
+    
+    const fn = new Function('row', `return ${jsExpr};`);
+    return fn(row);
+  } catch (e) {
+    console.warn('SQL evaluation error:', e);
+    return false;
+  }
+};
+
+// ---------- Parse SQL statement (format: target = constant WHERE condition PERCENT percentage) ----------
+const parseSqlStatement = (statement) => {
+  // Trim and remove trailing semicolon
+  const cleaned = statement.replace(/;\s*$/, '').trim();
+  const regex = /^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*('[^']*'|\d+)\s+WHERE\s+(.+?)\s+PERCENT\s+(\d+)\s*$/i;
+  const match = cleaned.match(regex);
+  if (!match) {
+    throw new Error('Invalid SQL statement format. Expected: target = constant WHERE condition PERCENT percentage');
+  }
+  const targetColumn = match[1];
+  const constantValue = match[2].startsWith("'") ? match[2].slice(1, -1) : match[2];
+  const condition = match[3].trim();
+  const percentage = parseInt(match[4], 10);
+  return { targetColumn, constantValue, condition, percentage };
+};
+
+// ---------- Helper to count matching rows for a SQL error ----------
+const countMatchingRows = (tableName, condition, count) => {
+  let matchCount = 0;
+  for (let i = 0; i < count; i++) {
+    let record;
+    switch (tableName) {
+      case 'policies':
+        record = generateRawPoliciesRecord(i);
+        break;
+      case 'claims':
+        record = generateRawClaimsRecord(i);
+        break;
+      case 'policyholders':
+        record = generateRawPolicyholdersRecord(i);
+        break;
+      case 'beneficiaries':
+        record = generateRawBeneficiariesRecord(i);
+        break;
+      case 'payments':
+        record = generateRawPaymentsRecord(i);
+        break;
+      case 'training_certification':
+        record = generateRawTrainingCertificationRecord(i);
+        break;
+      case 'region_regulatory_rules':
+        record = generateRawRegionRegulatoryRulesRecord(i);
+        break;
+      case 'agent_employee_brokers':
+        record = generateRawAgentEmployeeBrokersRecord(i);
+        break;
+      default:
+        record = {};
+    }
+    if (evaluateSqlWhere(condition, record)) {
+      matchCount++;
+    }
+  }
+  return matchCount;
+};
+
+// ---------- Custom Error Injection (with parsed SQL) ----------
 const applyCustomErrors = (record, tableName, customErrors, recordIndex, totalRecords) => {
   if (!customErrors || customErrors.length === 0) return record;
 
@@ -286,41 +366,63 @@ const applyCustomErrors = (record, tableName, customErrors, recordIndex, totalRe
   const customErrorApplied = [];
 
   customErrors.forEach(customError => {
-    // Only apply if this table is affected and error is enabled
     if (customError.tableName !== tableName || !customError.enabled) return;
 
-    const percentage = customError.percentage || 0;
-    // Use a unique seed based on error name and index for deterministic placement
-    const shouldApply = shouldApplyError(recordIndex, totalRecords, percentage, `custom_${customError.id}`);
+    let shouldApply = false;
+    let column = null;
+    let valueToSet = null;
+    let effectiveTotal = totalRecords;
 
-    if (shouldApply) {
-      // Apply the defined action
-      const column = customError.column;
-      if (record.hasOwnProperty(column)) {
-        switch (customError.action) {
-          case 'set_null':
-            record[column] = null;
-            break;
-          case 'set_invalid':
-            record[column] = customError.invalidValue || 'INVALID';
-            break;
-          case 'set_constant':
-            record[column] = customError.constantValue;
-            break;
-          default:
-            // do nothing
-            break;
-        }
-        customErrorApplied.push(column);
+    // For SQL query, parse the statement and use pre‑computed matching count
+    if (customError.queryType === 'sql') {
+      try {
+        const parsed = parseSqlStatement(customError.sqlQuery);
+        // Check condition for this row
+        const matchesCondition = evaluateSqlWhere(parsed.condition, record);
+        if (!matchesCondition) return;
+
+        column = parsed.targetColumn;
+        valueToSet = parsed.constantValue;
+        effectiveTotal = customError._matchingCount || totalRecords;
+        const percentage = parsed.percentage;
+        shouldApply = shouldApplyError(recordIndex, effectiveTotal, percentage, `custom_${customError.id}`);
+      } catch (e) {
+        console.warn('Error parsing SQL statement:', e);
+        return;
       }
+    } else {
+      // Simple query: use stored fields
+      column = customError.column;
+      valueToSet = customError.constantValue;
+      const percentage = customError.percentage || 0;
+      shouldApply = shouldApplyError(recordIndex, totalRecords, percentage, `custom_${customError.id}`);
+    }
+
+    if (!shouldApply) return;
+
+    if (record.hasOwnProperty(column)) {
+      switch (customError.action) {
+        case 'set_null':
+          record[column] = null;
+          break;
+        case 'set_invalid':
+          record[column] = customError.invalidValue || 'INVALID';
+          break;
+        case 'set_constant':
+          record[column] = valueToSet;
+          break;
+        default:
+          break;
+      }
+      customErrorApplied.push(column);
     }
   });
 
   if (customErrorApplied.length > 0) {
     record._customErrors = customErrorApplied;
     record._hasCustomError = true;
-    record._hasError = true; // <-- FIX: mark row as having an error
-    record._errors = [...errors, ...customErrorApplied]; // merge for UI highlighting
+    record._hasError = true;
+    record._errors = [...errors, ...customErrorApplied];
   }
 
   return record;
@@ -333,6 +435,30 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
   const useRawGeneration = piiFields !== null;
   const activeRules = businessRules.filter(r => r.tableName === tableName && r.enabled);
   const activeCustomErrors = customErrors.filter(c => c.tableName === tableName && c.enabled);
+
+  // Pre‑count matching rows for SQL custom errors
+  const sqlErrorsWithCount = activeCustomErrors
+    .filter(err => err.queryType === 'sql' && err.sqlQuery)
+    .map(err => {
+      try {
+        const parsed = parseSqlStatement(err.sqlQuery);
+        const matchCount = countMatchingRows(tableName, parsed.condition, count);
+        return { ...err, _matchingCount: matchCount };
+      } catch (e) {
+        console.warn('Error counting matches for SQL error:', e);
+        return err;
+      }
+    });
+
+  // Merge counts back into custom errors
+  const enhancedCustomErrors = activeCustomErrors.map(err => {
+    if (err.queryType === 'sql') {
+      const found = sqlErrorsWithCount.find(e => e.id === err.id);
+      return found || err;
+    }
+    return err;
+  });
+
   const MAX_AUTO_FIX_ATTEMPTS = 10;
 
   switch (tableName) {
@@ -385,8 +511,8 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         // ----- Apply built‑in errors -----
         record = introduceErrors(record, tableName, errorConfig, i, count);
 
-        // ----- Apply custom errors -----
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        // ----- Apply custom errors (using enhanced list) -----
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
 
         data.push(record);
       }
@@ -403,6 +529,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -435,7 +562,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;
@@ -453,6 +580,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -487,7 +615,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;
@@ -505,6 +633,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -539,7 +668,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;
@@ -555,6 +684,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -587,7 +717,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;
@@ -603,6 +733,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -635,7 +766,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;
@@ -651,6 +782,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -683,7 +815,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;
@@ -701,6 +833,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
           });
         }
 
+        // ----- Apply Business Rules (with auto-fix) -----
         let attempts = 0;
         let ruleViolations = [];
         let isValid = false;
@@ -735,7 +868,7 @@ export const generateSampleData = (tableName, count = 50, errorConfig = {}, piiF
         }
 
         record = introduceErrors(record, tableName, errorConfig, i, count);
-        record = applyCustomErrors(record, tableName, activeCustomErrors, i, count);
+        record = applyCustomErrors(record, tableName, enhancedCustomErrors, i, count);
         data.push(record);
       }
       break;

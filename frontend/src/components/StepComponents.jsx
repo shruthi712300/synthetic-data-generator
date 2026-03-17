@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, AlertCircle, CheckCircle, Info, Eye, Shield, Link as LinkIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp, AlertCircle, CheckCircle, Info, Eye, Shield, Link as LinkIcon, Edit } from 'lucide-react';
 
 // Step 3: Data Generation Controls
-export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, piiMaskingMode, onTableConfigChange, onPiiModeChange, onNext, onPrevious }) => {
+export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, piiMaskingMode, onTableConfigChange, onPiiModeChange, onOpenPiiModal, getEffectivePiiFields, onNext, onPrevious }) => {
   const handleToggleTable = (tableName) => {
     onTableConfigChange({
       ...tableGenerationConfig,
@@ -56,7 +56,10 @@ export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, pii
           </h3>
 
           <div style={{ display: 'grid', gap: '16px' }}>
-            {tables.map(table => (
+            {tables.map(table => {
+              const effectivePii = getEffectivePiiFields ? getEffectivePiiFields(table.name) : (table.piiFields || []);
+              const hasPii = effectivePii.length > 0;
+              return (
               <div key={table.name} className="generation-control-card">
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' }}>
                   <label className="toggle-switch">
@@ -76,9 +79,9 @@ export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, pii
                       <span className={`badge ${tableGenerationConfig[table.name] ? 'badge-success' : 'badge-secondary'}`}>
                         {tableGenerationConfig[table.name] ? 'Enabled' : 'Disabled'}
                       </span>
-                      {table.piiFields && table.piiFields.length > 0 && (
+                      {hasPii && (
                         <span className="badge badge-purple">
-                          {table.piiFields.length} PII Fields
+                          {effectivePii.length} PII Field{effectivePii.length !== 1 ? 's' : ''}
                         </span>
                       )}
                     </div>
@@ -88,19 +91,20 @@ export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, pii
                   </div>
                 </div>
 
-                {tableGenerationConfig[table.name] && table.piiFields && table.piiFields.length > 0 && (
+                {/* PII Masking Strategy — shown when table is enabled AND has effective PII fields */}
+                {tableGenerationConfig[table.name] && hasPii && (
                   <div style={{ marginLeft: '60px', paddingTop: '16px', borderTop: '1px solid var(--border-color)' }}>
                     <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>
                       PII Masking Strategy
                     </div>
-                    
+
                     <div style={{ display: 'grid', gap: '8px' }}>
                       <label className="pii-mode-option">
                         <input
                           type="radio"
                           name={`pii-${table.name}`}
                           value="masked"
-                          checked={piiMaskingMode[table.name] === 'masked'}
+                          checked={piiMaskingMode[table.name] === 'masked' || (!piiMaskingMode[table.name] || piiMaskingMode[table.name] === 'none')}
                           onChange={() => handlePiiModeChange(table.name, 'masked')}
                         />
                         <div>
@@ -144,13 +148,45 @@ export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, pii
                       </label>
                     </div>
 
-                    <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-tertiary)', borderRadius: '6px', fontSize: '12px' }}>
-                      <strong>PII Fields:</strong> {table.piiFields.join(', ')}
+                    <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-tertiary)', borderRadius: '6px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <strong>PII Fields:</strong> {effectivePii.join(', ')}
+                      </div>
+                      {onOpenPiiModal && (
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => onOpenPiiModal(table.name)}
+                          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', fontSize: '12px' }}
+                        >
+                          <Edit size={14} />
+                          Customize PII Fields
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Show PII override button for tables with NO effective PII fields */}
+                {tableGenerationConfig[table.name] && !hasPii && onOpenPiiModal && (
+                  <div style={{ marginLeft: '60px', paddingTop: '12px', borderTop: '1px solid var(--border-color)' }}>
+                    <div style={{ padding: '12px', background: 'rgba(102, 126, 234, 0.08)', borderRadius: '6px', border: '1px dashed rgba(102, 126, 234, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                        No PII fields configured. If this table contains sensitive data, you can manually mark fields as PII.
+                      </span>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => onOpenPiiModal(table.name)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                      >
+                        <Edit size={14} />
+                        Mark PII Fields
+                      </button>
                     </div>
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -167,26 +203,48 @@ export const Step3DataGenerationControls = ({ tables, tableGenerationConfig, pii
   );
 };
 
+// Helper: select display columns ensuring priority columns (PII, custom errors) are always visible
+const getDisplayColumns = (schema, maxCols, priorityNames = []) => {
+  const priorityCols = schema.filter(col => priorityNames.includes(col.name));
+  const otherCols = schema.filter(col => !priorityNames.includes(col.name));
+  const slotsForOthers = Math.max(0, maxCols - priorityCols.length);
+  const selectedOthers = otherCols.slice(0, slotsForOthers);
+  const selectedNames = new Set([...priorityCols.map(c => c.name), ...selectedOthers.map(c => c.name)]);
+  return schema.filter(col => selectedNames.has(col.name));
+};
+
 // Step 4: Generated Data Preview with Sub-sections
-export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable, tableGenerationConfig, piiMaskingMode, getCurrentTableData, activeSubSection, onSubSectionChange, onNext, onPrevious }) => {
+export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable, tableGenerationConfig, piiMaskingMode, getCurrentTableData, getEffectivePiiFields, activeSubSection, onSubSectionChange, onNext, onPrevious }) => {
   const enabledTables = tables.filter(t => tableGenerationConfig[t.name]);
   const currentTable = selectedTable || (enabledTables.length > 0 ? enabledTables[0].name : '');
   const tableData = currentTable ? getCurrentTableData(currentTable, false) : null;
   const tableInfo = tables.find(t => t.name === currentTable);
 
-  // Calculate total PII fields for AI banner
-  const allPIIFields = tables.reduce((acc, table) => {
+  // Calculate total PII fields (auto-detected only, for reference)
+  const autoDetectedPIIFields = tables.reduce((acc, table) => {
     if (table.piiFields && table.piiFields.length > 0) {
       table.piiFields.forEach(field => {
-        acc.push({
-          table: table.name,
-          field: field,
-          mode: piiMaskingMode[table.name]
-        });
+        acc.push({ table: table.name, field, mode: piiMaskingMode[table.name] });
       });
     }
     return acc;
   }, []);
+
+  // Calculate effective PII fields (auto + user-configured)
+  const allEffectivePIIFields = getEffectivePiiFields ? tables.reduce((acc, table) => {
+    const effectiveFields = getEffectivePiiFields(table.name);
+    effectiveFields.forEach(field => {
+      const isAutoDetected = table.piiFields && table.piiFields.includes(field);
+      acc.push({ table: table.name, field, mode: piiMaskingMode[table.name], isAutoDetected, isUserAdded: !isAutoDetected });
+    });
+    return acc;
+  }, []) : autoDetectedPIIFields;
+
+  // Compute user additions and removals
+  const userAddedPII = allEffectivePIIFields.filter(f => f.isUserAdded);
+  const userRemovedPII = autoDetectedPIIFields.filter(auto =>
+    !allEffectivePIIFields.some(eff => eff.table === auto.table && eff.field === auto.field)
+  );
 
   const subSections = [
     { id: 'data', label: 'Generated Data', icon: Eye },
@@ -273,15 +331,16 @@ export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable
               AI Data Generation Complete
             </div>
             <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-              I've analyzed your schema constraints (PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE) and generated 
-              statistically realistic data for the corporate insurance domain. All {allPIIFields.length} PII fields 
-              have been automatically masked using format-preserving techniques while maintaining referential integrity 
+              I've analyzed your schema constraints (PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE) and generated
+              statistically realistic data for the corporate insurance domain. All {allEffectivePIIFields.length} PII fields
+              ({autoDetectedPIIFields.length} auto-detected{userAddedPII.length > 0 ? `, ${userAddedPII.length} added by you` : ''}{userRemovedPII.length > 0 ? `, ${userRemovedPII.length} removed by you` : ''})
+              have been masked using format-preserving techniques while maintaining referential integrity
               across all tables.
             </div>
-            <div style={{ 
-              marginTop: '12px', 
-              padding: '8px 12px', 
-              background: 'white', 
+            <div style={{
+              marginTop: '12px',
+              padding: '8px 12px',
+              background: 'white',
               borderRadius: '6px',
               fontSize: '12px',
               color: 'var(--text-secondary)',
@@ -291,28 +350,31 @@ export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable
             }}>
               <span>✓ Schema-compliant data</span>
               <span>✓ Realistic business patterns</span>
-              <span>✓ PII automatically masked</span>
+              <span>✓ {allEffectivePIIFields.length} PII fields masked</span>
               <span>✓ Referential integrity maintained</span>
             </div>
           </div>
         </div>
 
         <div className="table-selector">
-          {enabledTables.map(table => (
-            <button
-              key={table.name}
-              className={`table-selector-btn ${currentTable === table.name ? 'active' : ''}`}
-              onClick={() => onSelectTable(table.name)}
-            >
-              <span className="table-name">
-                {table.name.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}
-              </span>
-              <span className="table-count">{table.records} records</span>
-              {table.piiFields && table.piiFields.length > 0 && (
-                <span className="pii-badge">🔒 PII</span>
-              )}
-            </button>
-          ))}
+          {enabledTables.map(table => {
+            const effectivePii = getEffectivePiiFields ? getEffectivePiiFields(table.name) : (table.piiFields || []);
+            return (
+              <button
+                key={table.name}
+                className={`table-selector-btn ${currentTable === table.name ? 'active' : ''}`}
+                onClick={() => onSelectTable(table.name)}
+              >
+                <span className="table-name">
+                  {table.name.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}
+                </span>
+                <span className="table-count">{table.records} records</span>
+                {effectivePii.length > 0 && (
+                  <span className="pii-badge">🔒 PII</span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
           {tableData && tableInfo && (
@@ -327,58 +389,85 @@ export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable
                 gap: '12px'
               }}>
                 <Shield size={20} style={{ color: 'var(--success)', flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <div style={{ fontWeight: '600', color: 'var(--success)', marginBottom: '4px', fontSize: '14px' }}>
-                    🔒 AI-Applied Masking: {piiMaskingMode[currentTable]?.toUpperCase() || 'NONE'}
-                  </div>
-                  <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                    {tableInfo.piiFields && tableInfo.piiFields.length > 0 
-                      ? `I've automatically identified and masked ${tableInfo.piiFields.length} PII fields (${tableInfo.piiFields.join(', ')}) using ${
-                          piiMaskingMode[currentTable] === 'masked' ? 'format-preserving tokenization' :
-                          piiMaskingMode[currentTable] === 'synthetic' ? 'fully synthetic generation' :
-                          'hybrid masking with safe field retention'
-                        }. All values maintain consistency across related records.`
-                      : 'No PII fields detected in this table - data generated based on business constraints only.'
-                    }
-                  </div>
-                </div>
+                {(() => {
+                  const effectivePii = getEffectivePiiFields ? getEffectivePiiFields(currentTable) : (tableInfo.piiFields || []);
+                  const autoPii = tableInfo.piiFields || [];
+                  const userAdded = effectivePii.filter(f => !autoPii.includes(f));
+                  const userRemoved = autoPii.filter(f => !effectivePii.includes(f));
+                  const maskingStrategy = piiMaskingMode[currentTable] === 'masked' ? 'format-preserving tokenization' :
+                    piiMaskingMode[currentTable] === 'synthetic' ? 'fully synthetic generation' :
+                    'hybrid masking with safe field retention';
+                  return (
+                    <div>
+                      <div style={{ fontWeight: '600', color: 'var(--success)', marginBottom: '4px', fontSize: '14px' }}>
+                        🔒 PII Masking: {piiMaskingMode[currentTable]?.toUpperCase() || 'NONE'} — {effectivePii.length} field{effectivePii.length !== 1 ? 's' : ''} masked
+                      </div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                        {effectivePii.length > 0 ? (
+                          <>
+                            {autoPii.length > 0 && (
+                              <div>AI auto-detected: <strong>{autoPii.filter(f => effectivePii.includes(f)).join(', ') || 'none remaining'}</strong></div>
+                            )}
+                            {userAdded.length > 0 && (
+                              <div style={{ color: 'var(--primary-color)' }}>+ You added: <strong>{userAdded.join(', ')}</strong></div>
+                            )}
+                            {userRemoved.length > 0 && (
+                              <div style={{ color: 'var(--accent-error)' }}>− You removed: <strong>{userRemoved.join(', ')}</strong></div>
+                            )}
+                            <div style={{ marginTop: '4px' }}>Masked using {maskingStrategy}. All values maintain consistency across related records.</div>
+                          </>
+                        ) : (
+                          'No PII fields configured for this table — data generated based on business constraints only.'
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               <div style={{ overflowX: 'auto', marginTop: '20px' }}>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      {tableInfo.schema.slice(0, 8).map(col => (
-                        <th key={col.name}>
-                          {col.name}
-                          {col.pii && <span style={{ marginLeft: '4px', fontSize: '10px' }}>🔒</span>}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableData.map((row, idx) => (
-                      <tr key={idx}>
-                        {tableInfo.schema.slice(0, 8).map(col => {
-                          const value = row[col.name];
-                          const isPII = col.pii;
-                          
-                          return (
-                            <td key={col.name}>
-                              {isPII ? (
-                                <span className={`pii-highlight pii-${col.name.includes('ssn') ? 'ssn' : col.name.includes('email') ? 'email' : col.name.includes('phone') ? 'phone' : 'dob'}`}>
-                                  {value}
-                                </span>
-                              ) : (
-                                value
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {(() => {
+                  const piiPriority = getEffectivePiiFields ? getEffectivePiiFields(currentTable) : [];
+                  const displayCols = getDisplayColumns(tableInfo.schema, 8, piiPriority);
+                  return (
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          {displayCols.map(col => {
+                            const isEffectivePii = piiPriority.includes(col.name);
+                            return (
+                              <th key={col.name}>
+                                {col.name}
+                                {isEffectivePii && <span style={{ marginLeft: '4px', fontSize: '10px' }}>🔒</span>}
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tableData.map((row, idx) => (
+                          <tr key={idx}>
+                            {displayCols.map(col => {
+                              const value = row[col.name];
+                              const isEffectivePii = piiPriority.includes(col.name);
+                              return (
+                                <td key={col.name}>
+                                  {isEffectivePii ? (
+                                    <span className={`pii-highlight pii-${col.name.includes('ssn') || col.name.includes('tax') ? 'ssn' : col.name.includes('email') ? 'email' : col.name.includes('phone') ? 'phone' : 'dob'}`}>
+                                      {value}
+                                    </span>
+                                  ) : (
+                                    value
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  );
+                })()}
               </div>
             </>
           )}
@@ -387,7 +476,7 @@ export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable
 
       {/* PII Detection & Masking Sub-section */}
       {activeSubSection === 'pii-config' && (
-        <PIIDetectionSection tables={enabledTables} piiMaskingMode={piiMaskingMode} />
+        <PIIDetectionSection tables={enabledTables} piiMaskingMode={piiMaskingMode} getEffectivePiiFields={getEffectivePiiFields} />
       )}
 
       {/* Compliance Sub-section */}
@@ -413,33 +502,40 @@ export const Step4GeneratedDataPreview = ({ tables, selectedTable, onSelectTable
 };
 
 // PII Detection Section Component
-const PIIDetectionSection = ({ tables, piiMaskingMode }) => {
+const PIIDetectionSection = ({ tables, piiMaskingMode, getEffectivePiiFields }) => {
+  // Build effective PII list (auto-detected + user-configured)
   const allPIIFields = tables.reduce((acc, table) => {
-    if (table.piiFields && table.piiFields.length > 0) {
-      table.piiFields.forEach(field => {
-        acc.push({
-          table: table.name,
-          field: field,
-          mode: piiMaskingMode[table.name]
-        });
+    const effectiveFields = getEffectivePiiFields ? getEffectivePiiFields(table.name) : (table.piiFields || []);
+    const autoFields = table.piiFields || [];
+    effectiveFields.forEach(field => {
+      const isAutoDetected = autoFields.includes(field);
+      acc.push({
+        table: table.name,
+        field: field,
+        mode: piiMaskingMode[table.name],
+        source: isAutoDetected ? 'auto' : 'user'
       });
-    }
+    });
     return acc;
   }, []);
+
+  const autoCount = allPIIFields.filter(f => f.source === 'auto').length;
+  const userCount = allPIIFields.filter(f => f.source === 'user').length;
 
   return (
     <div className="card">
       <div className="card-header">
         <div>
           <h2 className="card-title">PII Detection & Masking Configuration</h2>
-          <p className="card-subtitle">Automatically detected PII fields across all tables</p>
+          <p className="card-subtitle">Auto-detected and user-configured PII fields across all tables</p>
         </div>
       </div>
 
       <div className="alert alert-success">
         <CheckCircle size={20} />
         <div>
-          <strong>✓ Auto-Detection Complete:</strong> {allPIIFields.length} PII fields detected across {tables.length} tables
+          <strong>✓ PII Configuration:</strong> {allPIIFields.length} PII fields across {tables.length} tables
+          ({autoCount} auto-detected{userCount > 0 ? `, ${userCount} added by you` : ''})
         </div>
       </div>
 
@@ -471,6 +567,7 @@ const PIIDetectionSection = ({ tables, piiMaskingMode }) => {
           <tr>
             <th>Table</th>
             <th>Field</th>
+            <th>Source</th>
             <th>Detected Type</th>
             <th>Masking Strategy</th>
             <th>Preview</th>
@@ -483,17 +580,24 @@ const PIIDetectionSection = ({ tables, piiMaskingMode }) => {
                            pii.field.includes('phone') ? 'Phone' :
                            pii.field.includes('dob') || pii.field.includes('birth') ? 'DOB' :
                            'Bank Account';
-            
+
             const preview = pii.field.includes('ssn') || pii.field.includes('tax') ? 'XXX-XX-6789' :
                            pii.field.includes('email') ? 'j.smith@synthmail.com' :
                            pii.field.includes('phone') ? '(555) 789-0123' :
                            pii.field.includes('dob') || pii.field.includes('birth') ? '1987-03-22' :
                            '****1234';
-            
+
             return (
               <tr key={idx}>
                 <td><strong>{pii.table}</strong></td>
                 <td>{pii.field}</td>
+                <td>
+                  {pii.source === 'auto' ? (
+                    <span className="badge badge-info" style={{ fontSize: '10px' }}>Auto-detected</span>
+                  ) : (
+                    <span className="badge badge-purple" style={{ fontSize: '10px' }}>User-configured</span>
+                  )}
+                </td>
                 <td>
                   <span className={`pii-highlight pii-${pii.field.includes('ssn') || pii.field.includes('tax') ? 'ssn' : pii.field.includes('email') ? 'email' : pii.field.includes('phone') ? 'phone' : 'dob'}`}>
                     {piiType}
@@ -530,21 +634,21 @@ const PIIDetectionSection = ({ tables, piiMaskingMode }) => {
           </div>
           <div>
             <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary-color)', marginBottom: '4px' }}>
-              {allPIIFields.length}
+              {autoCount}
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Successfully Masked</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Auto-detected</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary-color)', marginBottom: '4px' }}>
+              {userCount}
+            </div>
+            <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>User-configured</div>
           </div>
           <div>
             <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary-color)', marginBottom: '4px' }}>
               100%
             </div>
             <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Masking Coverage</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary-color)', marginBottom: '4px' }}>
-              100%
-            </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Consistency Rate</div>
           </div>
         </div>
       </div>

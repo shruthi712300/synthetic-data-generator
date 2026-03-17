@@ -1,36 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-export default function LegacyUI({ page = "index.html" }) {
-  // Handle navigation from iframe to React routes
+const LegacyUI = ({ page }) => {
+  const [html, setHtml] = useState('');
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const handleMessage = (event) => {
-      // Listen for navigation messages from iframe
-      if (event.data && event.data.type === 'NAVIGATE') {
-        // Get the React Router's history/navigate function
-        window.location.href = event.data.path;
-      }
-    };
+    const url = page ? `/${page}` : '/index';
+    fetch(url)
+      .then(res => res.text())
+      .then(data => {
+        setHtml(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load legacy page:', err);
+        setLoading(false);
+      });
+  }, [page]);
 
-    window.addEventListener('message', handleMessage);
-    
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
+  if (loading) return <div>Loading...</div>;
+  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+};
 
-  return (
-    <div style={{ width: '100%', height: '100vh' }}>
-      <iframe
-        src={`/ui-code/templates/${page}`}
-        style={{
-          width: "100%",
-          height: "100vh",
-          border: "none",
-          display: "block"
-        }}
-        title={page}
-        sandbox="allow-scripts allow-same-origin"
-      />
-    </div>
-  );
-}
+export default LegacyUI;

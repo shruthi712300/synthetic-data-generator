@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Database, ChevronDown, ChevronUp, Save, RotateCcw, Download, AlertCircle, CheckCircle, Info, Eye, Shield, Link as LinkIcon, Edit, X } from 'lucide-react';
 import { generateSampleData, maskPII } from '../utils/dataGenerator';
 import { Step3DataGenerationControls, Step4GeneratedDataPreview } from './StepComponents';
-import { Step5ConfigureErrors, Step5BusinessRules, Step6DestinationPreview } from './Step5and6';
+import { Step5ConfigureErrors, Step6DestinationPreview } from './Step5and6';
 
 const SyntheticDataDashboard = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -51,7 +51,6 @@ const SyntheticDataDashboard = () => {
   // -------------------------------------------------
 
   // ----- PER-TABLE ERROR OVERRIDES (granular thresholds) -----
-  const [perTableErrorOverrides, setPerTableErrorOverrides] = useState({});
   // ---------------------------------------------------------
 
   // ----- CUSTOM BUSINESS RULES -----
@@ -277,17 +276,14 @@ const SyntheticDataDashboard = () => {
     }
   ];
 
-  // ----- UPDATED STEPS (with Business Rules inserted) -----
   const steps = [
     { number: 1, label: 'Source & Destination' },
     { number: 2, label: 'Detected Schema' },
     { number: 3, label: 'Data Generation Controls' },
     { number: 4, label: 'Generated Data Preview' },
-    { number: 5, label: 'Configure Errors & View Data' },
-    { number: 6, label: 'Business Rules & Validation' },   // <-- NEW
-    { number: 7, label: 'Destination Preview & Save' }     // was 6
+    { number: 5, label: 'Configure Errors & Validation' },
+    { number: 6, label: 'Destination Preview & Save' }
   ];
-  // -------------------------------------------------------
 
   // ---------- Event handlers (existing, unchanged) ----------
   const handleDatabaseSelection = (dbId, isSource = true) => {
@@ -332,28 +328,9 @@ const SyntheticDataDashboard = () => {
   };
 
   // ----- Per-table error change (granular thresholds) -----
-  const handlePerTableErrorChange = (tableName, errorType, value) => {
-    setPerTableErrorOverrides(prev => {
-      const tableOverrides = prev[tableName] ? { ...prev[tableName] } : {};
-      tableOverrides[errorType] = parseInt(value) || 0;
-      return { ...prev, [tableName]: tableOverrides };
-    });
-  };
-
-  const handleClearTableOverrides = (tableName) => {
-    setPerTableErrorOverrides(prev => {
-      const newState = { ...prev };
-      delete newState[tableName];
-      return newState;
-    });
-  };
-
-  // ----- Get effective error config for a specific table (global + overrides) -----
+  // ----- Get effective error config for a specific table -----
   const getEffectiveErrorConfig = (tableName) => {
-    const global = { ...errorConfig };
-    const overrides = perTableErrorOverrides[tableName];
-    if (!overrides) return global;
-    return { ...global, ...overrides };
+    return { ...errorConfig };
   };
 
   // ----- Business Rules handlers -----
@@ -396,9 +373,23 @@ const SyntheticDataDashboard = () => {
   };
 
   const handleCustomErrorPercentageChange = (id, percentage) => {
-    setCustomErrors(prev => prev.map(err => 
+    setCustomErrors(prev => prev.map(err =>
       err.id === id ? { ...err, percentage } : err
     ));
+  };
+
+  const handleResetAllErrors = (skipConfirm = false) => {
+    // Confirmation is now handled by the two-click pattern in Step5and6.jsx
+    // Reset built-in errors to 0
+    setErrorConfig(prev => {
+      const reset = {};
+      Object.keys(prev).forEach(key => { reset[key] = 0; });
+      return reset;
+    });
+    // Clear all custom errors
+    setCustomErrors([]);
+    // Clear all business/validation rules
+    setBusinessRules([]);
   };
   // -------------------------------------
 
@@ -470,6 +461,17 @@ const SyntheticDataDashboard = () => {
   };
 
   const handleClosePiiModal = () => {
+    // Auto-set masking mode to 'masked' if table now has PII but mode was 'none'
+    if (modalTableName) {
+      const effectivePii = getEffectivePiiFields(modalTableName);
+      if (effectivePii.length > 0 && (!piiMaskingMode[modalTableName] || piiMaskingMode[modalTableName] === 'none')) {
+        setPiiMaskingMode(prev => ({ ...prev, [modalTableName]: 'masked' }));
+      }
+      // If all PII was removed, set mode back to 'none'
+      if (effectivePii.length === 0 && piiMaskingMode[modalTableName] && piiMaskingMode[modalTableName] !== 'none') {
+        setPiiMaskingMode(prev => ({ ...prev, [modalTableName]: 'none' }));
+      }
+    }
     setShowPiiOverrideModal(false);
     setModalTableName('');
   };
@@ -487,24 +489,89 @@ const SyntheticDataDashboard = () => {
     });
   };
 
+  // ----- Helper: get priority columns (PII overrides + custom error targets) that must be visible in tables -----
+  const getPriorityColumns = (tableName) => {
+    const piiFields = getEffectivePiiFields(tableName);
+
+    // Custom error columns for this table (simple + SQL modes)
+    const customErrorCols = customErrors
+      .filter(err => err.tableName === tableName && err.enabled)
+      .flatMap(err => {
+        if (err.queryType === 'sql' && err.sqlQuery) {
+          try {
+            const match = err.sqlQuery.replace(/;\s*$/, '').trim()
+              .match(/^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=/i);
+            return match ? [match[1]] : [];
+          } catch (e) { return []; }
+        }
+        return err.column ? [err.column] : [];
+      });
+
+    // Validation rule columns for this table
+    const validationRuleCols = businessRules
+      .filter(r => r.tableName === tableName && r.enabled)
+      .map(r => r.column);
+
+    // Built-in error columns for this table (only active ones with percentage > 0)
+    const builtinErrorColumnMap = {
+      missingPolicyDates: { tables: ['policies'], columns: ['effective_date'] },
+      incompleteBeneficiary: { tables: ['beneficiaries'], columns: ['email', 'phone'] },
+      missingClaimAdjuster: { tables: ['claims'], columns: ['adjuster_id'] },
+      missingClientId: { tables: ['policies'], columns: ['policyholder_id'] },
+      endBeforeStart: { tables: ['policies'], columns: ['effective_date', 'expiry_date'] },
+      claimExceedsCoverage: { tables: ['claims'], columns: ['claim_amount'] },
+      paymentBeforeClaim: { tables: ['payments'], columns: ['payment_date'] },
+      invalidStatusTransitions: { tables: ['policies', 'claims'], columns: ['status'] },
+      duplicatePolicyNumbers: { tables: ['policies'], columns: ['policy_number'] },
+      incorrectJurisdiction: { tables: ['policies'], columns: ['region'] },
+      inconsistentDateFormats: { tables: ['policies', 'claims', 'payments'], columns: ['effective_date', 'claim_date', 'payment_date'] },
+      invalidEmailFormats: { tables: ['policyholders', 'beneficiaries', 'agent_employee_brokers'], columns: ['email'] },
+      malformedPhoneNumbers: { tables: ['policyholders', 'beneficiaries', 'agent_employee_brokers'], columns: ['phone'] },
+      overlappingPolicyPeriods: { tables: ['policies'], columns: ['effective_date', 'expiry_date'] },
+      claimBeforePolicyStart: { tables: ['claims'], columns: ['claim_date'] },
+      paymentExceedsClaim: { tables: ['payments'], columns: ['amount'] },
+      zeroPremiumPolicies: { tables: ['policies'], columns: ['premium_amount'] },
+      claimExceedsCoverageLimit: { tables: ['claims'], columns: ['claim_amount'] },
+      ageUnder18: { tables: ['beneficiaries'], columns: ['date_of_birth'] },
+      claimExceedsPremiumPaid: { tables: ['claims'], columns: ['claim_amount'] },
+      orphanedClaims: { tables: ['claims'], columns: ['policy_id'] },
+      paymentsWithoutClaims: { tables: ['payments'], columns: ['claim_id'] },
+      policyWithoutClient: { tables: ['policies'], columns: ['policyholder_id'] },
+      policyWithoutAgent: { tables: ['policies'], columns: ['agent_id'] }
+    };
+    const builtinCols = [];
+    Object.entries(errorConfig).forEach(([key, pct]) => {
+      if (pct > 0 && builtinErrorColumnMap[key] && builtinErrorColumnMap[key].tables.includes(tableName)) {
+        builtinCols.push(...builtinErrorColumnMap[key].columns);
+      }
+    });
+
+    return [...new Set([...piiFields, ...customErrorCols, ...validationRuleCols, ...builtinCols])];
+  };
+
   // ----- MODIFIED: getCurrentTableData now passes effective error config + business rules + custom errors -----
   const getCurrentTableData = (tableName, includeErrors = false, raw = false) => {
     const table = tables.find(t => t.name === tableName);
     if (!table) return null;
-    const config = includeErrors ? getEffectiveErrorConfig(tableName) : {};
-    // If raw is true, do NOT apply any PII masking
-    const effectivePiiFields = raw ? [] : getEffectivePiiFields(tableName);
-    const tableRules = businessRules.filter(r => r.tableName === tableName && r.enabled);
-    // Only apply custom errors if includeErrors is true
-    const tableCustomErrors = includeErrors ? customErrors.filter(c => c.tableName === tableName && c.enabled) : [];
-    return generateSampleData(
-      tableName,
-      table.records,
-      config,
-      effectivePiiFields,
-      tableRules,
-      tableCustomErrors
-    );
+    try {
+      const config = includeErrors ? getEffectiveErrorConfig(tableName) : {};
+      // If raw is true, do NOT apply any PII masking
+      const effectivePiiFields = raw ? [] : getEffectivePiiFields(tableName);
+      const tableRules = businessRules.filter(r => r.tableName === tableName && r.enabled);
+      // Only apply custom errors if includeErrors is true
+      const tableCustomErrors = includeErrors ? customErrors.filter(c => c.tableName === tableName && c.enabled) : [];
+      return generateSampleData(
+        tableName,
+        table.records,
+        config,
+        effectivePiiFields,
+        tableRules,
+        tableCustomErrors
+      );
+    } catch (e) {
+      console.error('Error generating table data for', tableName, ':', e);
+      return [];
+    }
   };
   // ---------------------------------------------------------------------------------------
 
@@ -548,40 +615,16 @@ const SyntheticDataDashboard = () => {
         />;
       
       case 3:
-        return <Step3DataGenerationControls 
-          tables={detectedTables}
-          tableGenerationConfig={tableGenerationConfig}
-          piiMaskingMode={piiMaskingMode}
-          onTableConfigChange={setTableGenerationConfig}
-          onPiiModeChange={setPiiMaskingMode}
-          onNext={handleNextStep}
-          onPrevious={handlePreviousStep}
-        />;
-      
-      case 4:
         return (
           <>
-            {selectedTable && (
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => handleOpenPiiModal(selectedTable)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  <Edit size={16} />
-                  Edit PII Overrides for {selectedTable}
-                </button>
-              </div>
-            )}
-            <Step4GeneratedDataPreview 
+            <Step3DataGenerationControls
               tables={detectedTables}
-              selectedTable={selectedTable}
-              onSelectTable={setSelectedTable}
               tableGenerationConfig={tableGenerationConfig}
               piiMaskingMode={piiMaskingMode}
-              getCurrentTableData={getCurrentTableData}
-              activeSubSection={activeSubSection}
-              onSubSectionChange={setActiveSubSection}
+              onTableConfigChange={setTableGenerationConfig}
+              onPiiModeChange={setPiiMaskingMode}
+              onOpenPiiModal={handleOpenPiiModal}
+              getEffectivePiiFields={getEffectivePiiFields}
               onNext={handleNextStep}
               onPrevious={handlePreviousStep}
             />
@@ -589,23 +632,51 @@ const SyntheticDataDashboard = () => {
               <PIIOverrideModal
                 table={tables.find(t => t.name === modalTableName)}
                 piiOverrides={piiOverrides}
-                onToggle={handlePiiOverrideToggle}
-                onClose={handleClosePiiModal}
+                onCommit={(draftOverrides) => {
+                  // Apply all draft changes to piiOverrides at once
+                  setPiiOverrides(prev => {
+                    // Remove old overrides for this table
+                    const cleaned = Object.fromEntries(
+                      Object.entries(prev).filter(([key]) => !key.startsWith(`${modalTableName}.`))
+                    );
+                    // Merge draft overrides
+                    return { ...cleaned, ...draftOverrides };
+                  });
+                  handleClosePiiModal();
+                }}
+                onClose={() => {
+                  // Cancel — just close, no changes applied
+                  setShowPiiOverrideModal(false);
+                  setModalTableName('');
+                }}
               />
             )}
           </>
         );
       
+      case 4:
+        return (
+          <Step4GeneratedDataPreview
+            tables={detectedTables}
+            selectedTable={selectedTable}
+            onSelectTable={setSelectedTable}
+            tableGenerationConfig={tableGenerationConfig}
+            piiMaskingMode={piiMaskingMode}
+            getCurrentTableData={getCurrentTableData}
+            getEffectivePiiFields={getEffectivePiiFields}
+            activeSubSection={activeSubSection}
+            onSubSectionChange={setActiveSubSection}
+            onNext={handleNextStep}
+            onPrevious={handlePreviousStep}
+          />
+        );
+      
       case 5:
         return (
-          <Step5ConfigureErrors 
-            // Global error config & handler
+          <Step5ConfigureErrors
+            // Error config & handler
             errorConfig={errorConfig}
             onErrorChange={handleErrorChange}
-            // Per-table overrides & handlers
-            perTableErrorOverrides={perTableErrorOverrides}
-            onPerTableErrorChange={handlePerTableErrorChange}
-            onClearTableOverrides={handleClearTableOverrides}
             // Existing props
             behaviorRules={behaviorRules}
             onBehaviorChange={setBehaviorRules}
@@ -613,39 +684,35 @@ const SyntheticDataDashboard = () => {
             getAffectedRecords={getAffectedRecords}
             tables={detectedTables}
             getCurrentTableData={getCurrentTableData}
-            // NEW: custom errors props
+            getPriorityColumns={getPriorityColumns}
+            getEffectivePiiFields={getEffectivePiiFields}
+            // Custom errors props
             customErrors={customErrors}
             onAddCustomError={handleAddCustomError}
             onUpdateCustomError={handleUpdateCustomError}
             onDeleteCustomError={handleDeleteCustomError}
             onToggleCustomError={handleToggleCustomError}
             onCustomErrorPercentageChange={handleCustomErrorPercentageChange}
-            onNext={handleNextStep}
-            onPrevious={handlePreviousStep}
-          />
-        );
-      
-      case 6:   // <-- Business Rules step
-        return (
-          <Step5BusinessRules
-            tables={detectedTables}
+            onResetAllErrors={handleResetAllErrors}
+            // Validation rules (business rules) props
             businessRules={businessRules}
             onAddRule={handleAddBusinessRule}
             onUpdateRule={handleUpdateBusinessRule}
             onDeleteRule={handleDeleteBusinessRule}
             onToggleRule={handleToggleRule}
-            getCurrentTableData={getCurrentTableData} // for rule testing
             onNext={handleNextStep}
             onPrevious={handlePreviousStep}
           />
         );
-      
-      case 7:   // was 6
-        return <Step6DestinationPreview 
+
+      case 6:
+        return <Step6DestinationPreview
           tables={detectedTables}
           selectedTable={selectedTable}
           onSelectTable={setSelectedTable}
           getCurrentTableData={getCurrentTableData}
+          getPriorityColumns={getPriorityColumns}
+          getEffectivePiiFields={getEffectivePiiFields}
           errorConfig={errorConfig}
           getAffectedRecords={getAffectedRecords}
           selectedSource={selectedSource}
@@ -662,6 +729,8 @@ const SyntheticDataDashboard = () => {
           }}
           savedData={savedData}
           onPrevious={handlePreviousStep}
+          businessRules={businessRules}
+          customErrors={customErrors}
         />;
       
       default:
@@ -700,9 +769,40 @@ const SyntheticDataDashboard = () => {
   );
 };
 
-// ----- PII Override Modal (unchanged) -----
-const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
+// ----- PII Override Modal (uses local draft state, commits on Done) -----
+const PIIOverrideModal = ({ table, piiOverrides, onCommit, onClose }) => {
+  // Local draft: initialize from current piiOverrides for this table
+  const [draft, setDraft] = React.useState(() => {
+    const initial = {};
+    if (table) {
+      table.schema.forEach(col => {
+        const key = `${table.name}.${col.name}`;
+        if (piiOverrides.hasOwnProperty(key)) {
+          initial[key] = piiOverrides[key];
+        }
+      });
+    }
+    return initial;
+  });
+
   if (!table) return null;
+
+  const handleToggle = (tableName, columnName, value) => {
+    const key = `${tableName}.${columnName}`;
+    setDraft(prev => {
+      if (value === null) {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      }
+      return { ...prev, [key]: value };
+    });
+  };
+
+  const handleDone = () => {
+    onCommit(draft);
+  };
+
   return (
     <div className="modal-overlay" style={{
       position: 'fixed',
@@ -734,9 +834,17 @@ const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
             <X size={20} />
           </button>
         </div>
-        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
-          Manually mark columns as PII. Overrides will be applied during data generation.
-        </p>
+        <div style={{ padding: '16px', background: 'rgba(102, 126, 234, 0.08)', borderRadius: '8px', marginBottom: '20px', border: '1px solid rgba(102, 126, 234, 0.2)' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+            The system automatically detects PII (Personally Identifiable Information) fields like SSN, email, and phone numbers.
+            Use this modal to override those detections if needed:
+          </p>
+          <div style={{ display: 'grid', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+            <div><strong style={{ color: 'var(--text-primary)' }}>Yes</strong> — Force this column to be treated as PII (it will be masked/synthesized during generation)</div>
+            <div><strong style={{ color: 'var(--text-primary)' }}>No</strong> — Force this column to NOT be treated as PII (keeps original values, even if auto-detected)</div>
+            <div><strong style={{ color: 'var(--text-primary)' }}>Auto</strong> — Use the system's automatic detection (default behavior)</div>
+          </div>
+        </div>
         <table className="data-table" style={{ fontSize: '13px' }}>
           <thead>
             <tr>
@@ -750,8 +858,8 @@ const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
             {table.schema.map(col => {
               const autoPii = col.pii || false;
               const overrideKey = `${table.name}.${col.name}`;
-              const overrideValue = piiOverrides.hasOwnProperty(overrideKey) 
-                ? piiOverrides[overrideKey] 
+              const overrideValue = draft.hasOwnProperty(overrideKey)
+                ? draft[overrideKey]
                 : null;
               return (
                 <tr key={col.name}>
@@ -771,7 +879,7 @@ const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
                           type="radio"
                           name={`pii-override-${col.name}`}
                           checked={overrideValue === true}
-                          onChange={() => onToggle(table.name, col.name, true)}
+                          onChange={() => handleToggle(table.name, col.name, true)}
                         />
                         <span style={{ fontSize: '12px' }}>Yes</span>
                       </label>
@@ -780,7 +888,7 @@ const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
                           type="radio"
                           name={`pii-override-${col.name}`}
                           checked={overrideValue === false}
-                          onChange={() => onToggle(table.name, col.name, false)}
+                          onChange={() => handleToggle(table.name, col.name, false)}
                         />
                         <span style={{ fontSize: '12px' }}>No</span>
                       </label>
@@ -789,7 +897,7 @@ const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
                           type="radio"
                           name={`pii-override-${col.name}`}
                           checked={overrideValue === null}
-                          onChange={() => onToggle(table.name, col.name, null)}
+                          onChange={() => handleToggle(table.name, col.name, null)}
                         />
                         <span style={{ fontSize: '12px' }}>Auto</span>
                       </label>
@@ -802,7 +910,7 @@ const PIIOverrideModal = ({ table, piiOverrides, onToggle, onClose }) => {
         </table>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px', gap: '12px' }}>
           <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-          <button className="btn btn-primary" onClick={onClose}>Done</button>
+          <button className="btn btn-primary" onClick={handleDone}>Done</button>
         </div>
       </div>
     </div>
@@ -878,8 +986,13 @@ const Step2DetectedSchema = ({ tables, onNext, onPrevious }) => {
         <div className="alert alert-success">
           <CheckCircle size={20} />
           <div>
-            <strong>Schema Detection Complete!</strong> Found {tables.length} tables with full relationships, 
+            <strong>Schema Detection Complete!</strong> Found {tables.length} tables with full relationships,
             constraints, and PII fields identified.
+            {tables.filter(t => t.piiFields && t.piiFields.length > 0).length > 0 && (
+              <div style={{ marginTop: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                PII fields (marked with purple badges below) will be automatically masked. You can customize which fields are treated as PII in <strong>Step 3: Data Generation Controls</strong>.
+              </div>
+            )}
           </div>
         </div>
         <div className="stats-grid">
